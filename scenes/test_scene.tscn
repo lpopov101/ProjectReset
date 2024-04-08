@@ -6,12 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://bgcj24tnqorl7" path="res://textures/stock/brick.jpg" id="4_8agyc"]
 [ext_resource type="Texture2D" uid="uid://ftdrd0rtgg3h" path="res://textures/stock/grass.jpg" id="5_o0bi4"]
 [ext_resource type="Texture2D" uid="uid://beunwpbucfhc5" path="res://textures/stock/stone.jpg" id="6_f2eoc"]
-[ext_resource type="Script" path="res://src/Gameplay/FirstPersonController.cs" id="6_qh314"]
+[ext_resource type="Script" path="res://src/Gameplay/Player/FirstPersonController.cs" id="6_qh314"]
 [ext_resource type="Material" uid="uid://tnxyyt08a6n" path="res://textures/stock/wood.tres" id="7_djxlk"]
-[ext_resource type="Script" path="res://src/Gameplay/InteractionPoint.cs" id="7_gqb1a"]
+[ext_resource type="Script" path="res://src/Gameplay/Interaction/InteractionPoint.cs" id="7_gqb1a"]
 [ext_resource type="ArrayOccluder3D" uid="uid://c7xx24s1g8es5" path="res://scenes/test_scene.occ" id="7_rhq3e"]
-[ext_resource type="Script" path="res://src/Test/TestElevator.cs" id="9_5ildg"]
-[ext_resource type="Script" path="res://src/Test/TestItemPickup.cs" id="12_r3yh0"]
+[ext_resource type="Script" path="res://src/Gameplay/Environment/TestElevator.cs" id="9_5ildg"]
+[ext_resource type="Script" path="res://src/Gameplay/Inventory/TestItemPickup.cs" id="12_r3yh0"]
 [ext_resource type="Resource" uid="uid://demnjjllcarq8" path="res://resources/inventory items/test_inventory_item.tres" id="13_pg5t7"]
 [ext_resource type="Resource" uid="uid://b72srorm17fg6" path="res://resources/inventory items/test_inventory_item2.tres" id="14_df4qf"]
 
@@ -329,15 +329,16 @@ shape = SubResource("ConvexPolygonShape3D_aed5o")
 [node name="entity_0_brush_29_collision_shape" type="CollisionShape3D" parent="Map/entity_0_worldspawn"]
 shape = SubResource("ConvexPolygonShape3D_3mqn6")
 
-[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("_StairProbe")]
+[node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47145, 0)
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
 _GroundedMovementSpeed = 10.0
 _MaxHorizontalSpeed = 10.0
 _MaxStairHeight = 1.0
-_StairProbe = NodePath("StairProbe")
 _StairProbeDistance = 0.667
+_StairProbe = Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -1, 2.08165e-12),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":null)
+
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_8fl7j")
@@ -473,6 +474,3 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 0)
 shape = SubResource("SphereShape3D_qqy07")
-
-[connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
-[connection signal="OnInteract" from="Elevator/InteractionPoint2" to="Elevator" method="Toggle"]

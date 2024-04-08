@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TestInventoryItem" load_steps=3 format=3 uid="uid://b72srorm17fg6"]
 
 [ext_resource type="PackedScene" uid="uid://wrocxg2afii2" path="res://resources/inventory items/test_inventory_item_model2.tscn" id="1_oa7yg"]
-[ext_resource type="Script" path="res://src/Test/TestInventoryItem.cs" id="2_jogal"]
+[ext_resource type="Script" path="res://src/Gameplay/Inventory/TestInventoryItem.cs" id="2_jogal"]
 
 [resource]
 script = ExtResource("2_jogal")
