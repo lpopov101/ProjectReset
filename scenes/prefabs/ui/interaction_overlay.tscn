@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://fbn4of1l22y7"]
 
 [ext_resource type="Texture2D" uid="uid://b4j3jt7l6jlrs" path="res://textures/ui/circle.png" id="1_4c4rn"]
-[ext_resource type="Script" path="res://src/UI/Interaction/InteractionOverlay.cs" id="2_e0q8s"]
+[ext_resource type="Script" path="res://src/UI/Interaction/InteractionOverlay.cs" id="2_pp4ms"]
 
 [node name="InteractionOverlay" type="TextureRect" node_paths=PackedStringArray("_Text")]
 offset_right = 20.0
 offset_bottom = 20.0
 texture = ExtResource("1_4c4rn")
 expand_mode = 1
-script = ExtResource("2_e0q8s")
+script = ExtResource("2_pp4ms")
 _Text = NodePath("RichTextLabel")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]

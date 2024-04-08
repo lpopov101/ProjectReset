@@ -329,16 +329,15 @@ shape = SubResource("ConvexPolygonShape3D_aed5o")
 [node name="entity_0_brush_29_collision_shape" type="CollisionShape3D" parent="Map/entity_0_worldspawn"]
 shape = SubResource("ConvexPolygonShape3D_3mqn6")
 
-[node name="Player" type="CharacterBody3D" parent="."]
+[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("_StairProbe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47145, 0)
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
 _GroundedMovementSpeed = 10.0
 _MaxHorizontalSpeed = 10.0
 _MaxStairHeight = 1.0
+_StairProbe = NodePath("")
 _StairProbeDistance = 0.667
-_StairProbe = Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -1, 2.08165e-12),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":null)
-
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_8fl7j")
