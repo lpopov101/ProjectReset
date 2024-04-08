@@ -1,0 +1,14 @@
+[remap]
+
+importer="qodot.map"
+type="Resource"
+uid="uid://civtgokgb88cf"
+path="res://.godot/imported/TestSceneMap.map-36137b0023f7fbb162d5eb29b06fc82f.tres"
+
+[deps]
+
+source_file="res://maps/TestSceneMap.map"
+dest_files=["res://.godot/imported/TestSceneMap.map-36137b0023f7fbb162d5eb29b06fc82f.tres"]
+
+[params]
+

@@ -1,0 +1,191 @@
+[gd_scene load_steps=12 format=3 uid="uid://b58c2ewso3xq2"]
+
+[ext_resource type="Script" path="res://src/UI/UIBase.cs" id="1_8ehq8"]
+[ext_resource type="Script" path="res://src/UI/MessageDisplayText.cs" id="2_rkv35"]
+[ext_resource type="Script" path="res://src/UI/InteractionOverlayManager.cs" id="3_e8w0h"]
+[ext_resource type="PackedScene" uid="uid://fbn4of1l22y7" path="res://scenes/prefabs/ui/interaction_overlay.tscn" id="4_fw4ae"]
+[ext_resource type="Script" path="res://src/UI/InventoryPanel.cs" id="5_4q3mi"]
+[ext_resource type="Script" path="res://src/UI/InventoryItemView.cs" id="5_ijo8p"]
+[ext_resource type="Script" path="res://src/UI/InventoryDisplayContainer.cs" id="5_xfdvv"]
+[ext_resource type="PackedScene" uid="uid://2oj518tt082d" path="res://resources/inventory items/test_inventory_item_model.tscn" id="6_balbm"]
+[ext_resource type="Script" path="res://src/UI/InventoryScrollContainer.cs" id="6_q3j5r"]
+[ext_resource type="Script" path="res://src/UI/SimpleOrbitCamera.cs" id="6_rh3gw"]
+[ext_resource type="PackedScene" uid="uid://bhffos1unbpws" path="res://scenes/prefabs/ui/inventory_entry.tscn" id="7_kxpbm"]
+
+[node name="UICanvasLayer" type="CanvasLayer"]
+
+[node name="UIBase" type="Control" parent="." node_paths=PackedStringArray("_MenuUI", "_HUDUI")]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8ehq8")
+_MenuUI = NodePath("Menu")
+_HUDUI = NodePath("HUD")
+
+[node name="HUD" type="Control" parent="UIBase"]
+process_mode = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UIBase/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="MessageDisplayText" type="RichTextLabel" parent="UIBase/HUD/CenterContainer"]
+custom_minimum_size = Vector2(600, 2.08165e-12)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Messages here[/center]"
+fit_content = true
+script = ExtResource("2_rkv35")
+
+[node name="InteractionOverlayManager" type="Control" parent="UIBase/HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_e8w0h")
+_InteractionOverlayTemplate = ExtResource("4_fw4ae")
+
+[node name="Menu" type="Control" parent="UIBase"]
+process_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UIBase/Menu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+use_top_left = true
+
+[node name="InventoryPanel" type="PanelContainer" parent="UIBase/Menu/CenterContainer" node_paths=PackedStringArray("_WeightLabel", "_InventoryScrollContainer", "_InventoryItemView")]
+custom_minimum_size = Vector2(800, 600)
+layout_mode = 2
+script = ExtResource("5_4q3mi")
+_WeightLabel = NodePath("MarginContainer/HBoxContainer/InventoryList/VBoxContainer/WeightLabel")
+_InventoryScrollContainer = NodePath("MarginContainer/HBoxContainer/InventoryList/VBoxContainer/InventoryScrollContainer")
+_InventoryItemView = NodePath("MarginContainer/HBoxContainer/InventoryView")
+
+[node name="MarginContainer" type="MarginContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="InventoryList" type="MarginContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryList"]
+layout_mode = 2
+
+[node name="WeightLabel" type="RichTextLabel" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryList/VBoxContainer"]
+layout_mode = 2
+text = "Weight: 0/0"
+fit_content = true
+
+[node name="InventoryScrollContainer" type="ScrollContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("6_q3j5r")
+_EntryTemplate = ExtResource("7_kxpbm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryList/VBoxContainer/InventoryScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InventoryView" type="MarginContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer" node_paths=PackedStringArray("_InventoryDisplayContainer", "_NameLabel", "_DescriptionLabel", "_UseButton", "_DiscardButton")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+script = ExtResource("5_ijo8p")
+_InventoryDisplayContainer = NodePath("VBoxContainer/InventoryDisplayContainer")
+_NameLabel = NodePath("VBoxContainer/NameText")
+_DescriptionLabel = NodePath("VBoxContainer/DescriptionText")
+_UseButton = NodePath("VBoxContainer/HBoxContainer/UseButton")
+_DiscardButton = NodePath("VBoxContainer/HBoxContainer/DiscardButton")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView"]
+layout_mode = 2
+
+[node name="InventoryDisplayContainer" type="SubViewportContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer" node_paths=PackedStringArray("_OrbitCamera", "_DisplayModel")]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+script = ExtResource("5_xfdvv")
+_OrbitCamera = NodePath("SubViewport/Camera3D")
+_DisplayModel = NodePath("SubViewport/MeshInstance3D")
+
+[node name="SubViewport" type="SubViewport" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/InventoryDisplayContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(378, 491)
+render_target_update_mode = 4
+
+[node name="MeshInstance3D" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/InventoryDisplayContainer/SubViewport" instance=ExtResource("6_balbm")]
+
+[node name="Camera3D" type="Camera3D" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/InventoryDisplayContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.27638)
+script = ExtResource("6_rh3gw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/InventoryDisplayContainer/SubViewport"]
+transform = Transform3D(0.707107, 0.5, -0.5, 2.4663e-16, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 0, 0)
+
+[node name="NameText" type="RichTextLabel" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Name[/center]"
+fit_content = true
+
+[node name="DescriptionText" type="RichTextLabel" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer"]
+layout_mode = 2
+text = "Item description here."
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer"]
+layout_mode = 2
+
+[node name="UseButton" type="Button" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Use
+"
+
+[node name="DiscardButton" type="Button" parent="UIBase/Menu/CenterContainer/InventoryPanel/MarginContainer/HBoxContainer/InventoryView/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Discard
+"

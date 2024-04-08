@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhffos1unbpws"]
+
+[ext_resource type="Texture2D" uid="uid://b4j3jt7l6jlrs" path="res://textures/ui/circle.png" id="1_8v4f3"]
+[ext_resource type="Script" path="res://src/UI/InventoryEntry.cs" id="1_fdjfv"]
+
+[node name="InventoryEntry" type="PanelContainer" node_paths=PackedStringArray("_SelectedIndicator", "_NameLabel", "_WeightLabel", "_SelectButton")]
+script = ExtResource("1_fdjfv")
+_SelectedIndicator = NodePath("MarginContainer/HBoxContainer/SelectedIndicator")
+_NameLabel = NodePath("MarginContainer/HBoxContainer/NameLabel")
+_WeightLabel = NodePath("MarginContainer/HBoxContainer/WeightLabel")
+_SelectButton = NodePath("SelectButton")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Item Name"
+fit_content = true
+
+[node name="WeightLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Weight: 1"
+fit_content = true
+
+[node name="SelectedIndicator" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_8v4f3")
+expand_mode = 3
+
+[node name="SelectButton" type="TextureButton" parent="."]
+layout_mode = 2

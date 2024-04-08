@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TestInventoryItem" load_steps=3 format=3 uid="uid://demnjjllcarq8"]
+
+[ext_resource type="PackedScene" uid="uid://2oj518tt082d" path="res://resources/inventory items/test_inventory_item_model.tscn" id="1_dhpd7"]
+[ext_resource type="Script" path="res://src/Test/TestInventoryItem.cs" id="1_hxepb"]
+
+[resource]
+script = ExtResource("1_hxepb")
+_Name = "Test Item"
+_Description = "Item used for testing!"
+_Weight = 2
+_DisplayModelTemplate = ExtResource("1_dhpd7")
