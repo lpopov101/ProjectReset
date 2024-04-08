@@ -27,6 +27,7 @@ public partial class InventoryEntry : Control, ISpawnable
     {
         _selected = false;
         setSelectedIndicatorAlpha(0F);
+        Selected = null;
     }
 
     public void OnSpawn() { }
