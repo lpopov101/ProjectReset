@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhffos1unbpws"]
 
 [ext_resource type="Texture2D" uid="uid://b4j3jt7l6jlrs" path="res://textures/ui/circle.png" id="1_8v4f3"]
-[ext_resource type="Script" path="res://src/UI/InventoryEntry.cs" id="1_fdjfv"]
+[ext_resource type="Script" path="res://src/UI/Inventory/InventoryEntry.cs" id="1_fdjfv"]
 
 [node name="InventoryEntry" type="PanelContainer" node_paths=PackedStringArray("_SelectedIndicator", "_NameLabel", "_WeightLabel", "_SelectButton")]
 script = ExtResource("1_fdjfv")
