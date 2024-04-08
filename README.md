@@ -1,3 +1,3 @@
 # ProjectReset
 
-My first real Godot project!
+My first real Godot project
