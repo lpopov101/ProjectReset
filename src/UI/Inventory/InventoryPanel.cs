@@ -17,7 +17,7 @@ public partial class InventoryPanel : Control
     public override void _Ready()
     {
         base._Ready();
-        _inventory = GameManager.Player1().GetInventory();
+        _inventory = Locator<PlayerManager>.Get().Player1().GetInventory();
         updateWeightLabel();
         _inventory.InventoryItemChanged += (item) =>
         {
@@ -39,7 +39,7 @@ public partial class InventoryPanel : Control
         };
         _InventoryItemView.Use += (item) =>
         {
-            _inventory.GetItemWithQuantity(item).Item.Use(GameManager.Player1());
+            _inventory.GetItemWithQuantity(item).Item.Use(Locator<PlayerManager>.Get().Player1());
             clearItemViewIfNoItem();
         };
         _InventoryItemView.Discard += (item) =>

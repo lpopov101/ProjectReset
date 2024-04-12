@@ -17,7 +17,7 @@ public partial class TestNPC : NPC
     public override void _Process(double delta)
     {
         base._Process(delta);
-        setTargetPosition(GameManager.Player1().GetCharacterBody().GlobalPosition);
+        setTargetPosition(Locator<PlayerManager>.Get().Player1().GetCharacterBody().GlobalPosition);
         Velocity = getTargetVelocity() * (float)_Speed;
         MoveAndSlide();
     }

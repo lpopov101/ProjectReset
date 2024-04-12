@@ -29,6 +29,12 @@ public partial class InputManager : Node
 
     private Vector2 _mouseMotion = Vector2.Zero;
 
+    public override void _Ready()
+    {
+        base._Ready();
+        Locator<InputManager>.Register(this);
+    }
+
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventMouseMotion eventMouseMotion)

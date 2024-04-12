@@ -45,8 +45,8 @@ public partial class ProjectileLauncher : Node3D
             () =>
             {
                 return _RapidFire
-                    ? GameManager.InputManager().GetFireHeldInput()
-                    : GameManager.InputManager().GetFirePressedInput();
+                    ? Locator<InputManager>.Get().GetFireHeldInput()
+                    : Locator<InputManager>.Get().GetFirePressedInput();
             }
         );
         _stateMachine.addStateTransition(
@@ -77,13 +77,16 @@ public partial class ProjectileLauncher : Node3D
     {
         if (_SoundEffect != null)
         {
-            GameManager
-                .SoundManager()
+            Locator<SoundManager>
+                .Get()
                 .Spawn3DAudioAsChild(_SoundEffect, this)
                 .WithVolume(-35F)
                 .WithPitchVariation(0.2F)
                 .Play();
         }
-        GameManager.GetPool(_SpawnTemplate).Spawn3D<Hitscan>(GlobalPosition, GlobalRotation);
+        Locator<SpawnManager>
+            .Get()
+            .GetPool(_SpawnTemplate)
+            .Spawn3D<Hitscan>(GlobalPosition, GlobalRotation);
     }
 }

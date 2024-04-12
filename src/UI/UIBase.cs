@@ -9,8 +9,6 @@ public partial class UIBase : Control
         InGameMenu
     }
 
-    private static UIBase _instance;
-
     [Export]
     private Control _MenuUI;
 
@@ -22,8 +20,9 @@ public partial class UIBase : Control
     public override void _Ready()
     {
         base._Ready();
+        Locator<UIBase>.Register(this);
 
-        GameManager.InputManager().SetCursorCaptured();
+        Locator<InputManager>.Get().SetCursorCaptured();
         _MenuUI.Visible = false;
         _stateMachine = new StateMachine<State>(State.InGame);
 
@@ -32,7 +31,7 @@ public partial class UIBase : Control
             State.InGameMenu,
             () =>
             {
-                return GameManager.InputManager().GetMenuInput();
+                return Locator<InputManager>.Get().GetMenuInput();
             }
         );
 
@@ -41,7 +40,7 @@ public partial class UIBase : Control
             State.InGame,
             () =>
             {
-                return GameManager.InputManager().GetMenuInput();
+                return Locator<InputManager>.Get().GetMenuInput();
             }
         );
 
@@ -50,7 +49,7 @@ public partial class UIBase : Control
             () =>
             {
                 _HUDUI.Visible = true;
-                GameManager.InputManager().SetCursorCaptured();
+                Locator<InputManager>.Get().SetCursorCaptured();
             }
         );
 
@@ -68,7 +67,7 @@ public partial class UIBase : Control
             {
                 GetTree().Paused = true;
                 _MenuUI.Visible = true;
-                GameManager.InputManager().SetCursorVisible();
+                Locator<InputManager>.Get().SetCursorVisible();
             }
         );
 
@@ -80,18 +79,11 @@ public partial class UIBase : Control
                 _MenuUI.Visible = false;
             }
         );
-
-        _instance = this;
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
         _stateMachine.ProcessState();
-    }
-
-    public static UIBase Instance()
-    {
-        return _instance;
     }
 }

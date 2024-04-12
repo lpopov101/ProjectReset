@@ -16,6 +16,7 @@ public partial class MessageManager : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Locator<MessageManager>.Register(this);
         _messageQueue = new Queue<string>();
         _messageExpiryTimer = new Timer { Autostart = true, OneShot = true };
         _messageExpiryTimer.Timeout += () =>

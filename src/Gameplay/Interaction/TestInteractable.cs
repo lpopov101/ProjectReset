@@ -16,8 +16,8 @@ public partial class TestInteractable : StaticBody3D, IInteractable
 
     public void Interact()
     {
-        GameManager.MessageManager().AddMessage($"Interacted with {Name}");
-        GameManager.SoundManager().Spawn3DAudioAsChild(_InteractSoundEffect, this).PlayOnce();
+        Locator<MessageManager>.Get().AddMessage($"Interacted with {Name}");
+        Locator<SoundManager>.Get().Spawn3DAudioAsChild(_InteractSoundEffect, this).PlayOnce();
         EmitSignal(SignalName.Interacted);
     }
 }

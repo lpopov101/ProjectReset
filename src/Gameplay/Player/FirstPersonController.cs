@@ -58,7 +58,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
             () =>
             {
                 var direction = getMovementDirection();
-                var jumpForce = GameManager.InputManager().GetJumpInput() ? _JumpForce : 0F;
+                var jumpForce = Locator<InputManager>.Get().GetJumpInput() ? _JumpForce : 0F;
                 var targetVelocity = VelocityBuilder
                     .FromVelocity(Velocity)
                     .WithGroundedMovement(
@@ -109,15 +109,15 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     {
         return Basis
             * new Vector3(
-                GameManager.InputManager().GetHorizontalMovementInput(),
+                Locator<InputManager>.Get().GetHorizontalMovementInput(),
                 0,
-                GameManager.InputManager().GetVerticalMovementInput()
+                Locator<InputManager>.Get().GetVerticalMovementInput()
             ).Normalized();
     }
 
     private void applyTurning()
     {
-        var mouseMotion = GameManager.InputManager().GetAndResetMouseMotion();
+        var mouseMotion = Locator<InputManager>.Get().GetAndResetMouseMotion();
         RotateY(Mathf.DegToRad(-mouseMotion.X * _MouseSensitivity));
         _pitch += Mathf.DegToRad(-mouseMotion.Y * _MouseSensitivity);
         _pitch = Mathf.Clamp(_pitch, Mathf.DegToRad(-90.0f), Mathf.DegToRad(90.0f));
@@ -161,7 +161,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
 
     public void PickUp(string message)
     {
-        GameManager.MessageManager().AddMessage(message);
+        Locator<MessageManager>.Get().AddMessage(message);
     }
 
     public Player CreatePlayer()

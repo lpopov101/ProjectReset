@@ -17,7 +17,10 @@ public partial class TestHitscan : Hitscan
         {
             damageable.Damage(_Damage);
         }
-        var particle = GameManager.GetPool(_CollisionEffect).Spawn3D<ParticleEffect>();
+        var particle = Locator<SpawnManager>
+            .Get()
+            .GetPool(_CollisionEffect)
+            .Spawn3D<ParticleEffect>();
         particle.MoveToPosAndNormal(position, normal);
     }
 }

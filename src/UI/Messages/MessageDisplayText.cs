@@ -11,6 +11,6 @@ public partial class MessageDisplayText : RichTextLabel
 
     public override void _Process(double delta)
     {
-        Text = $"[center]{String.Join("\n", GameManager.MessageManager().GetMessages())}[/center]";
+        Text = $"[center]{String.Join("\n", Locator<MessageManager>.Get().GetMessages())}[/center]";
     }
 }

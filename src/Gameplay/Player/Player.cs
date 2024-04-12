@@ -1,8 +1,21 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public class Player : IDamageable
 {
+    public enum EquipSlot
+    {
+        Weapon,
+        Armor
+    }
+
+    public delegate void EquipEventHandler(InventoryItem inventoryItem);
+
+    public event EquipEventHandler ItemEquipped;
+
+    public event EquipEventHandler ItemUnequipped;
+
     private CharacterBody3D _characterBody;
     private Camera3D _camera;
 
@@ -43,5 +56,19 @@ public class Player : IDamageable
     public void Heal(float healAmount)
     {
         Damage(-healAmount);
+    }
+
+    public void EquipItem(InventoryItem item)
+    {
+        if (_inventory.GetItemWithQuantity(item) == null)
+        {
+            return;
+        }
+        ItemEquipped.Invoke(item);
+    }
+
+    public void UnequipItem(InventoryItem item)
+    {
+        ItemUnequipped.Invoke(item);
     }
 }

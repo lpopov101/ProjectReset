@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2jcldcopp7hu"]
+
+[ext_resource type="Script" path="res://src/Autoload/MessageManager.cs" id="1_dp3b6"]
+
+[node name="MessageManager" type="Node"]
+script = ExtResource("1_dp3b6")
+_MessageCapacity = 3
+_MessageLifespanSecs = 2.0

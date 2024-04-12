@@ -28,7 +28,8 @@ public partial class NPCSpawner : Node3D
     {
         if (!_OneAtATime || _curSpawned == null || !_curSpawned._IsSpawned)
         {
-            _curSpawned = GameManager
+            _curSpawned = Locator<SpawnManager>
+                .Get()
                 .GetPool(_NPCTemplate)
                 .Spawn3D<NPC>(GlobalPosition, GlobalRotation);
         }

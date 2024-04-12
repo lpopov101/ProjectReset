@@ -42,7 +42,7 @@ public partial class InteractionPoint : Node3D
     {
         base._Ready();
         _stateMachine = new StateMachine<State>(State.Hidden);
-        _camera = GameManager.Player1().GetCamera();
+        _camera = Locator<PlayerManager>.Get().Player1().GetCamera();
 
         _stateMachine.addStateTransition(
             State.Hidden,
@@ -140,9 +140,9 @@ public partial class InteractionPoint : Node3D
             State.Interactable,
             () =>
             {
-                if (GameManager.InputManager().GetInteractInput())
+                if (Locator<InputManager>.Get().GetInteractInput())
                 {
-                    GameManager.MessageManager().AddMessage("Interacted with " + Name);
+                    Locator<MessageManager>.Get().AddMessage("Interacted with " + Name);
                     EmitSignal(SignalName.OnInteract);
                 }
             }
@@ -180,7 +180,7 @@ public partial class InteractionPoint : Node3D
 
     private float GetNormalizedDistanceToScreenCenter()
     {
-        var viewportSize = UIBase.Instance().GetViewportRect().Size;
+        var viewportSize = Locator<UIBase>.Get().GetViewportRect().Size;
         var xAxisLength = viewportSize.X / 2F;
         var yAxisLength = viewportSize.Y / 2F;
         var xNormalized = (_screenCoords.X - xAxisLength) / xAxisLength;
@@ -210,7 +210,7 @@ public partial class InteractionPoint : Node3D
         var hit = new RaycastBuilder(this)
             .FromPosition(_camera.GlobalPosition)
             .WithDirectionAndMagnitude(directionFromCamera, _distanceFromCamera + 2F)
-            .WithIgnoredObject(GameManager.Player1().GetCharacterBody())
+            .WithIgnoredObject(Locator<PlayerManager>.Get().Player1().GetCharacterBody())
             .Cast();
         if (hit != null && _camera.GlobalPosition.DistanceTo(hit.Position) < _distanceFromCamera)
         {

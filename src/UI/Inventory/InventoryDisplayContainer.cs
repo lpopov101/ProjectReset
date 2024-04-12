@@ -41,17 +41,17 @@ public partial class InventoryDisplayContainer : SubViewportContainer
     public override void _Process(double delta)
     {
         base._Process(delta);
-        if (_mouseInArea && GameManager.InputManager().GetFireHeldInput())
+        if (_mouseInArea && Locator<InputManager>.Get().GetFireHeldInput())
         {
             _rotating = true;
         }
-        else if (!GameManager.InputManager().GetFireHeldInput())
+        else if (!Locator<InputManager>.Get().GetFireHeldInput())
         {
             _rotating = false;
         }
         if (_rotating)
         {
-            _OrbitCamera.Rotate(-GameManager.InputManager().GetAndResetMouseMotion(), delta);
+            _OrbitCamera.Rotate(-Locator<InputManager>.Get().GetAndResetMouseMotion(), delta);
         }
     }
 }

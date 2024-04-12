@@ -24,7 +24,7 @@ public partial class InventoryScrollContainer : ScrollContainer
     {
         base._Ready();
         _childContainer = GetChild<Container>(0);
-        _entryPool = GameManager.GetPool(_EntryTemplate);
+        _entryPool = Locator<SpawnManager>.Get().GetPool(_EntryTemplate);
         _entryDict = new Dictionary<string, InventoryEntry>();
     }
 

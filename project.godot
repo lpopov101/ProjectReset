@@ -17,7 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameManager="*res://scenes/autoload/game_manager.tscn"
+InputManager="*res://scenes/autoload/input_manager.tscn"
+MessageManager="*res://scenes/autoload/message_manager.tscn"
+SoundManager="*res://scenes/autoload/sound_manager.tscn"
+SpawnManager="*res://scenes/autoload/spawn_manager.tscn"
+PlayerManager="*res://scenes/autoload/player_manager.tscn"
 UI="*res://scenes/autoload/ui.tscn"
 
 [display]

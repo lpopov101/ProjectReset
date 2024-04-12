@@ -30,8 +30,8 @@ public partial class ParticleEffect : GpuParticles3D, ISpawnable
         Emitting = true;
         if (_SoundEffect != null)
         {
-            GameManager
-                .SoundManager()
+            Locator<SoundManager>
+                .Get()
                 .Spawn3DAudio(_SoundEffect, GlobalPosition)
                 .WithPitchVariation(0.2F)
                 .Play();

@@ -31,12 +31,12 @@ public partial class TestItemPickup : Area3D
         {
             if (body is IPickupable pickupable)
             {
-                GameManager.Player1().GetInventory().TryAddItem(_inventoryItem);
+                Locator<PlayerManager>.Get().Player1().GetInventory().TryAddItem(_inventoryItem);
                 pickupable.PickUp($"Picked up {_inventoryItem.GetName()}");
                 if (_pickupSound != null)
                 {
-                    GameManager
-                        .SoundManager()
+                    Locator<SoundManager>
+                        .Get()
                         .Spawn3DAudioAsSibling(_pickupSound, this)
                         .WithPitchVariation(0.1F)
                         .PlayOnce();

@@ -15,6 +15,12 @@ public abstract partial class InventoryItem : Resource
     [Export]
     protected PackedScene _DisplayModelTemplate;
 
+    [Export]
+    protected bool _Equippable;
+
+    [Export]
+    protected Player.EquipSlot _EquipSlot;
+
     protected Inventory _inventory;
 
     public InventoryItem()

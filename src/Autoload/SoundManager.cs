@@ -9,6 +9,7 @@ public partial class SoundManager : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Locator<SoundManager>.Register(this);
         _audioPlayerPool = Pool.Create(new PooledAudioPlayer());
         AddChild(_audioPlayerPool);
         _audioPlayer3DPool = Pool.Create(new PooledAudioPlayer3D());

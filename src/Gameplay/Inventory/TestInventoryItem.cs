@@ -9,7 +9,7 @@ public partial class TestInventoryItem : InventoryItem
 
     public override void Use(Player player)
     {
-        GameManager.Player1().Heal(10);
+        Locator<PlayerManager>.Get().Player1().Heal(10);
         _inventory.RemoveItem(this);
     }
 }

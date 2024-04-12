@@ -21,7 +21,7 @@ public partial class InteractionOverlayManager : Control
     public override void _Ready()
     {
         base._Ready();
-        _interactionPointPool = GameManager.GetPool(_InteractionOverlayTemplate);
+        _interactionPointPool = Locator<SpawnManager>.Get().GetPool(_InteractionOverlayTemplate);
         _interactionPointOverlayDict = new Dictionary<InteractionPoint, InteractionOverlay>();
 
         InteractionPoint.VisibleInteractionPointAdded += (interactionPoint) =>
@@ -50,7 +50,7 @@ public partial class InteractionOverlayManager : Control
             {
                 interactionOverlay.SetAlpha(1F);
                 interactionOverlay.DisplayMessage(
-                    (_ShowKeyPrompts ? (GameManager.InputManager().GetInteractKeys() + ": ") : "")
+                    (_ShowKeyPrompts ? (Locator<InputManager>.Get().GetInteractKeys() + ": ") : "")
                         + interactionPoint.GetInteractionPrompt()
                 );
             }
