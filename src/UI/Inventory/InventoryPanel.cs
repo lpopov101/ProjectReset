@@ -17,8 +17,15 @@ public partial class InventoryPanel : Control
     public override void _Ready()
     {
         base._Ready();
-        _inventory = Locator<PlayerManager>.Get().Player1().GetInventory();
-        updateWeightLabel();
+        _InventoryScrollContainer.EntrySelected += (item) =>
+        {
+            _InventoryItemView.SetItem(item);
+        };
+    }
+
+    public void SetInventory(Inventory inventory)
+    {
+        _inventory = inventory;
         _inventory.InventoryItemChanged += (item) =>
         {
             var itemWithQuantity = _inventory.GetItemWithQuantity(item);
@@ -33,10 +40,6 @@ public partial class InventoryPanel : Control
             }
             updateWeightLabel();
         };
-        _InventoryScrollContainer.EntrySelected += (item) =>
-        {
-            _InventoryItemView.SetItem(item);
-        };
         _InventoryItemView.Use += (item) =>
         {
             _inventory.GetItemWithQuantity(item).Item.Use(Locator<PlayerManager>.Get().Player1());
@@ -47,6 +50,7 @@ public partial class InventoryPanel : Control
             _inventory.RemoveItem(item);
             clearItemViewIfNoItem();
         };
+        updateWeightLabel();
     }
 
     private void clearItemViewIfNoItem()

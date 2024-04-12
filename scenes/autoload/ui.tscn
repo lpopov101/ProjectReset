@@ -14,7 +14,7 @@
 
 [node name="UICanvasLayer" type="CanvasLayer"]
 
-[node name="UIBase" type="Control" parent="." node_paths=PackedStringArray("_MenuUI", "_HUDUI")]
+[node name="UIBase" type="Control" parent="." node_paths=PackedStringArray("_MenuUI", "_HUDUI", "_InventoryPanel")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -25,6 +25,7 @@ grow_vertical = 2
 script = ExtResource("1_8ehq8")
 _MenuUI = NodePath("Menu")
 _HUDUI = NodePath("HUD")
+_InventoryPanel = NodePath("Menu/CenterContainer/InventoryPanel")
 
 [node name="HUD" type="Control" parent="UIBase"]
 process_mode = 1

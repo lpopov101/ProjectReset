@@ -15,6 +15,9 @@ public partial class UIBase : Control
     [Export]
     private Control _HUDUI;
 
+    [Export]
+    private InventoryPanel _InventoryPanel;
+
     private StateMachine<State> _stateMachine;
 
     public override void _Ready()
@@ -22,6 +25,7 @@ public partial class UIBase : Control
         base._Ready();
         Locator<UIBase>.Register(this);
 
+        _InventoryPanel.SetInventory(Locator<PlayerManager>.Get().Player1().GetInventory());
         Locator<InputManager>.Get().SetCursorCaptured();
         _MenuUI.Visible = false;
         _stateMachine = new StateMachine<State>(State.InGame);
