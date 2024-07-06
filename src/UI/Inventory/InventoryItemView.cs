@@ -22,7 +22,6 @@ public partial class InventoryItemView : Control
 
     [Export]
     private Button _DiscardButton;
-
     private InventoryItem _item;
 
     public override void _Ready()
@@ -51,6 +50,7 @@ public partial class InventoryItemView : Control
         _DescriptionLabel.Text = item.GetDescription();
         _UseButton.Visible = true;
         _DiscardButton.Visible = true;
+        _UseButton.Text = item.GetUseActionName();
     }
 
     public void ClearItem()

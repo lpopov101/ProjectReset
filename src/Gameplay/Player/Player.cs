@@ -4,22 +4,10 @@ using Godot;
 
 public class Player : IDamageable
 {
-    public enum EquipSlot
-    {
-        Weapon,
-        Armor
-    }
-
-    public delegate void EquipEventHandler(InventoryItem inventoryItem);
-
-    public event EquipEventHandler ItemEquipped;
-
-    public event EquipEventHandler ItemUnequipped;
-
     private CharacterBody3D _characterBody;
     private Camera3D _camera;
 
-    private Inventory _inventory;
+    private InventoryWithEquipment _inventory;
 
     public float _Health { get; set; }
 
@@ -27,7 +15,7 @@ public class Player : IDamageable
     {
         _characterBody = characterBody;
         _camera = camera;
-        _inventory = new Inventory(inventoryMaxCapacity);
+        _inventory = new InventoryWithEquipment(inventoryMaxCapacity);
     }
 
     public CharacterBody3D GetCharacterBody()
@@ -58,17 +46,18 @@ public class Player : IDamageable
         Damage(-healAmount);
     }
 
-    public void EquipItem(InventoryItem item)
+    public bool TryEquipItem(EquippableInventoryItem item)
     {
-        if (_inventory.GetItemWithQuantity(item) == null)
+        if (!_inventory.ContainsItem(item) && !_inventory.TryAddItem(item))
         {
-            return;
+            return false;
         }
-        ItemEquipped.Invoke(item);
+        _inventory.GetEquipment().EquipItem(item);
+        return true;
     }
 
-    public void UnequipItem(InventoryItem item)
+    public void UnequipItem(EquippableInventoryItem item)
     {
-        ItemUnequipped.Invoke(item);
+        _inventory.GetEquipment().UnequipItemIfEquipped(item);
     }
 }

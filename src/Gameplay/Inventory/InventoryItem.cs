@@ -15,12 +15,6 @@ public abstract partial class InventoryItem : Resource
     [Export]
     protected PackedScene _DisplayModelTemplate;
 
-    [Export]
-    protected bool _Equippable;
-
-    [Export]
-    protected Player.EquipSlot _EquipSlot;
-
     protected Inventory _inventory;
 
     public InventoryItem()
@@ -59,6 +53,11 @@ public abstract partial class InventoryItem : Resource
     public int GetWeight()
     {
         return _Weight;
+    }
+
+    public virtual string GetUseActionName()
+    {
+        return "Use";
     }
 
     public PackedScene GetDisplayModelTemplate()

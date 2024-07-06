@@ -37,6 +37,14 @@ public partial class InventoryPanel : Control
             {
                 var entry = _InventoryScrollContainer.GetOrAddEntry(item);
                 entry.SetQuantity(itemWithQuantity.Quantity);
+                if (item is EquippableInventoryItem equippableItem)
+                {
+                    entry.SetEquipped(equippableItem.GetEquipped());
+                }
+                if (_InventoryScrollContainer.GetSelectedItem().GetName() == item.GetName())
+                {
+                    _InventoryItemView.SetItem(item);
+                }
             }
             updateWeightLabel();
         };

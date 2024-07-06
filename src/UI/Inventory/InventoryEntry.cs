@@ -11,6 +11,9 @@ public partial class InventoryEntry : Control, ISpawnable
     private TextureRect _SelectedIndicator;
 
     [Export]
+    private TextureRect _EquippedIndicator;
+
+    [Export]
     private RichTextLabel _NameLabel;
 
     [Export]
@@ -73,13 +76,18 @@ public partial class InventoryEntry : Control, ISpawnable
     public void SetInventoryItem(InventoryItem item)
     {
         _inventoryItemWithQuantity = new Inventory.InventoryItemWithQuantity(item, 0);
-        UpdateLabels();
+        UpdateElements();
     }
 
     public void SetQuantity(int quantity)
     {
         _inventoryItemWithQuantity.Quantity = quantity;
-        UpdateLabels();
+        UpdateElements();
+    }
+
+    public void SetEquipped(bool equipped)
+    {
+        _EquippedIndicator.Visible = equipped;
     }
 
     public InventoryItem GetInventoryItem()
@@ -92,7 +100,7 @@ public partial class InventoryEntry : Control, ISpawnable
         return _inventoryItemWithQuantity.Quantity;
     }
 
-    private void UpdateLabels()
+    private void UpdateElements()
     {
         _NameLabel.Text = _inventoryItemWithQuantity.Item.GetName();
         if (_inventoryItemWithQuantity.Quantity > 1)

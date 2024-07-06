@@ -31,6 +31,11 @@ public class Inventory
         _itemDict = new Dictionary<string, InventoryItemWithQuantity>();
     }
 
+    public bool ContainsItem(InventoryItem item)
+    {
+        return _itemDict.ContainsKey(item.GetName());
+    }
+
     public bool TryAddItem(InventoryItem item, int quantity = 1)
     {
         if (item.GetWeight() * quantity > _remainingCapcaity)
@@ -45,28 +50,27 @@ public class Inventory
         }
         _itemDict[name].Quantity += quantity;
         _remainingCapcaity -= item.GetWeight() * quantity;
-        InventoryItemChanged.Invoke(item);
+        InvokeItemChanged(item);
         return true;
     }
 
-    public void RemoveItem(string name, int quantity = 1)
+    public virtual void RemoveItem(InventoryItem item, int quantity = 1)
     {
-        if (_itemDict.ContainsKey(name))
+        if (_itemDict.ContainsKey(item.GetName()))
         {
-            var itemWithQuantity = _itemDict[name];
+            var itemWithQuantity = _itemDict[item.GetName()];
             itemWithQuantity.Quantity -= quantity;
             _remainingCapcaity += itemWithQuantity.Item.GetWeight() * quantity;
             if (itemWithQuantity.Quantity <= 0)
             {
-                _itemDict.Remove(name);
+                _itemDict.Remove(item.GetName());
             }
-            InventoryItemChanged.Invoke(itemWithQuantity.Item);
+            InvokeItemChanged(itemWithQuantity.Item);
         }
     }
 
-    public void RemoveItem(InventoryItem item, int quantity = 1)
-    {
-        RemoveItem(item.GetName(), quantity);
+    protected void InvokeItemChanged(InventoryItem item) {
+        InventoryItemChanged.Invoke(item);
     }
 
     public InventoryItemWithQuantity GetItemWithQuantity(string name)

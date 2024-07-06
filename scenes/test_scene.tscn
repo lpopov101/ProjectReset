@@ -378,6 +378,31 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Elevator/StaticBody3D"]
 shape = SubResource("BoxShape3D_en37q")
 
+[node name="Elevator2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.048, -0.8, 5.45722)
+script = ExtResource("9_5ildg")
+_Offset = Vector3(2.08165e-12, 7, 2.08165e-12)
+_Speed = 1.0
+
+[node name="InteractionPoint" type="Node3D" parent="Elevator2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.915311, 2.08165e-12)
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Use Elevator"
+_MaxInteractionHintDistance = 5.0
+_MaxInteractionDistance = 2.0
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Elevator2"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Elevator2/StaticBody3D"]
+transform = Transform3D(5, 0, 0, 0, 0.333, 0, 0, 0, 5, 0, 0, 0)
+layers = 2
+material_override = ExtResource("7_djxlk")
+mesh = SubResource("BoxMesh_mk1ns")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Elevator2/StaticBody3D"]
+shape = SubResource("BoxShape3D_en37q")
+
 [node name="Area3D" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.2941, 0, 0)
 script = ExtResource("12_r3yh0")
@@ -468,3 +493,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 0)
 shape = SubResource("SphereShape3D_qqy07")
 
 [connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
+[connection signal="OnInteract" from="Elevator2/InteractionPoint" to="Elevator2" method="Toggle"]
