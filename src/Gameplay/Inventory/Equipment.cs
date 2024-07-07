@@ -25,20 +25,20 @@ public class Equipment
         _lastEquippedTimeDict = new Dictionary<EquipSlot, ulong>();
     }
 
-    public void EquipItem(EquippableInventoryItem item)
+    public bool EquipItem(EquippableInventoryItem item)
     {
-        var maybeBestEquipSlot = GetBestEquipSlot(item.GetCompatibleSlots());
-        if (maybeBestEquipSlot.HasValue)
+        if (GetBestEquipSlot(item.GetCompatibleSlots()) is EquipSlot bestEquipSlot)
         {
-            var bestEquipSlot = maybeBestEquipSlot.Value;
             _equipmentDict[bestEquipSlot] = item;
             _lastEquippedTimeDict[bestEquipSlot] = Time.GetTicksMsec();
             item.SetEquipped(true);
             EquipmentChanged.Invoke(item, bestEquipSlot);
+            return true;
         }
+        return false;
     }
 
-    public void UnequipSlot(EquipSlot equipSlot)
+    public bool UnequipSlot(EquipSlot equipSlot)
     {
         if (_equipmentDict.ContainsKey(equipSlot))
         {
@@ -46,15 +46,18 @@ public class Equipment
             _equipmentDict.Remove(equipSlot);
             equippedItem.SetEquipped(false);
             EquipmentChanged.Invoke(equippedItem, equipSlot);
+            return true;
         }
+        return false;
     }
 
-    public void UnequipItemIfEquipped(EquippableInventoryItem item)
+    public bool UnequipItem(EquippableInventoryItem item)
     {
         if (GetEquipSlot(item) is EquipSlot slot)
         {
-            UnequipSlot(slot);
+            return UnequipSlot(slot);
         }
+        return false;
     }
 
     public Nullable<EquipSlot> GetEquipSlot(EquippableInventoryItem item)

@@ -23,7 +23,7 @@ public class InventoryWithEquipment : Inventory
             && GetItemWithQuantity(item).Quantity - quantity <= 0
         )
         {
-            _equipment.UnequipItemIfEquipped(equippableItem);
+            _equipment.UnequipItem(equippableItem);
         }
         base.RemoveItem(item, quantity);
     }
