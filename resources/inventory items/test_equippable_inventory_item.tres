@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TestEquippableInventoryItem" load_steps=3 format=3 uid="uid://d2d783dgk1rdn"]
+
+[ext_resource type="PackedScene" uid="uid://2oj518tt082d" path="res://resources/inventory items/test_inventory_item_model.tscn" id="1_2vxlf"]
+[ext_resource type="Script" path="res://src/Gameplay/Inventory/TestEquippableInventoryItem.cs" id="1_tywuc"]
+
+[resource]
+script = ExtResource("1_tywuc")
+_Name = "Equippable Item"
+_Description = "You can equip this item!"
+_Weight = 4
+_DisplayModelTemplate = ExtResource("1_2vxlf")

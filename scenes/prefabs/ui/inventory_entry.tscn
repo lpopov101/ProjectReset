@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://bhffos1unbpws"]
+[gd_scene load_steps=4 format=3 uid="uid://bhffos1unbpws"]
 
 [ext_resource type="Texture2D" uid="uid://b4j3jt7l6jlrs" path="res://textures/ui/circle.png" id="1_8v4f3"]
 [ext_resource type="Script" path="res://src/UI/Inventory/InventoryEntry.cs" id="1_fdjfv"]
+[ext_resource type="Texture2D" uid="uid://byllonx1oqkbg" path="res://textures/ui/equip.png" id="2_43seh"]
 
-[node name="InventoryEntry" type="PanelContainer" node_paths=PackedStringArray("_SelectedIndicator", "_NameLabel", "_WeightLabel", "_SelectButton")]
+[node name="InventoryEntry" type="PanelContainer" node_paths=PackedStringArray("_SelectedIndicator", "_EquippedIndicator", "_NameLabel", "_WeightLabel", "_SelectButton")]
 script = ExtResource("1_fdjfv")
 _SelectedIndicator = NodePath("MarginContainer/HBoxContainer/SelectedIndicator")
+_EquippedIndicator = NodePath("MarginContainer/HBoxContainer/EquippedIndicator")
 _NameLabel = NodePath("MarginContainer/HBoxContainer/NameLabel")
 _WeightLabel = NodePath("MarginContainer/HBoxContainer/WeightLabel")
 _SelectButton = NodePath("SelectButton")
@@ -31,6 +33,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Weight: 1"
 fit_content = true
+
+[node name="EquippedIndicator" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_43seh")
+expand_mode = 3
 
 [node name="SelectedIndicator" type="TextureRect" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

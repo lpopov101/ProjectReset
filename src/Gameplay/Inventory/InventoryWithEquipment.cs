@@ -18,11 +18,14 @@ public class InventoryWithEquipment : Inventory
 
     public override void RemoveItem(InventoryItem item, int quantity = 1)
     {
-        if (item is EquippableInventoryItem equippableItem)
+        if (
+            item is EquippableInventoryItem equippableItem
+            && GetItemWithQuantity(item).Quantity - quantity <= 0
+        )
         {
             _equipment.UnequipItemIfEquipped(equippableItem);
         }
-        RemoveItem(item, quantity);
+        base.RemoveItem(item, quantity);
     }
 
     public Equipment GetEquipment()

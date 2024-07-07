@@ -38,6 +38,7 @@ public partial class InventoryEntry : Control, ISpawnable
     public override void _Ready()
     {
         base._Ready();
+        _EquippedIndicator.Visible = false;
         _SelectButton.ToggleMode = false;
         setSelectedIndicatorAlpha(0F);
         _SelectButton.Pressed += () =>

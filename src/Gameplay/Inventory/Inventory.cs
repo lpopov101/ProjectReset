@@ -69,7 +69,8 @@ public class Inventory
         }
     }
 
-    protected void InvokeItemChanged(InventoryItem item) {
+    protected void InvokeItemChanged(InventoryItem item)
+    {
         InventoryItemChanged.Invoke(item);
     }
 

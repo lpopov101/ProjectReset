@@ -34,6 +34,7 @@ public class Equipment
             _equipmentDict[bestEquipSlot] = item;
             _lastEquippedTimeDict[bestEquipSlot] = Time.GetTicksMsec();
             item.SetEquipped(true);
+            EquipmentChanged.Invoke(item, bestEquipSlot);
         }
     }
 

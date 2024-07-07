@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=64 format=3 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
@@ -13,7 +13,8 @@
 [ext_resource type="Script" path="res://src/Gameplay/Environment/TestElevator.cs" id="9_5ildg"]
 [ext_resource type="Script" path="res://src/Gameplay/Inventory/TestItemPickup.cs" id="12_r3yh0"]
 [ext_resource type="Resource" uid="uid://demnjjllcarq8" path="res://resources/inventory items/test_inventory_item.tres" id="13_pg5t7"]
-[ext_resource type="Resource" uid="uid://b72srorm17fg6" path="res://resources/inventory items/test_inventory_item2.tres" id="14_df4qf"]
+[ext_resource type="PackedScene" uid="uid://wrocxg2afii2" path="res://resources/inventory items/test_inventory_item_model2.tscn" id="14_nt16q"]
+[ext_resource type="Script" path="res://src/Gameplay/Inventory/TestEquippableInventoryItem.cs" id="15_o7tlh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ba3dg"]
 
@@ -215,6 +216,13 @@ size = Vector3(5, 0.333, 5)
 [sub_resource type="BoxMesh" id="BoxMesh_lyayu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_an1py"]
+
+[sub_resource type="Resource" id="Resource_o8tlo"]
+script = ExtResource("15_o7tlh")
+_Name = "Equippable Item"
+_Description = "You can equip this item!"
+_Weight = 4
+_DisplayModelTemplate = ExtResource("14_nt16q")
 
 [sub_resource type="SphereMesh" id="SphereMesh_qsjne"]
 
@@ -452,7 +460,7 @@ shape = SubResource("BoxShape3D_an1py")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.1253, 0, 5.0543)
 script = ExtResource("12_r3yh0")
 _distanceFromGround = 1.0
-_inventoryItem = ExtResource("14_df4qf")
+_inventoryItem = SubResource("Resource_o8tlo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 0)
@@ -467,7 +475,7 @@ shape = SubResource("SphereShape3D_qqy07")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.976, 0, 5.0543)
 script = ExtResource("12_r3yh0")
 _distanceFromGround = 1.0
-_inventoryItem = ExtResource("14_df4qf")
+_inventoryItem = SubResource("Resource_o8tlo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 0)
@@ -481,7 +489,7 @@ shape = SubResource("SphereShape3D_qqy07")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.3922, 0, 5.0543)
 script = ExtResource("12_r3yh0")
 _distanceFromGround = 1.0
-_inventoryItem = ExtResource("14_df4qf")
+_inventoryItem = SubResource("Resource_o8tlo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 0)
