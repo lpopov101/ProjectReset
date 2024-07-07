@@ -28,7 +28,7 @@ public class Player : IDamageable
         return _camera;
     }
 
-    public Inventory GetInventory()
+    public InventoryWithEquipment GetInventory()
     {
         return _inventory;
     }
@@ -44,20 +44,5 @@ public class Player : IDamageable
     public void Heal(float healAmount)
     {
         Damage(-healAmount);
-    }
-
-    public bool TryEquipItem(EquippableInventoryItem item)
-    {
-        if (!_inventory.ContainsItem(item) && !_inventory.TryAddItem(item))
-        {
-            return false;
-        }
-        _inventory.GetEquipment().EquipItem(item);
-        return true;
-    }
-
-    public void UnequipItem(EquippableInventoryItem item)
-    {
-        _inventory.GetEquipment().UnequipItemIfEquipped(item);
     }
 }

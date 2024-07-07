@@ -14,11 +14,11 @@ public abstract partial class EquippableInventoryItem : InventoryItem
     {
         if (_equipped)
         {
-            player.UnequipItem(this);
+            player.GetInventory().GetEquipment().UnequipItemIfEquipped(this);
         }
         else
         {
-            player.TryEquipItem(this);
+            player.GetInventory().GetEquipment().EquipItem(this);
         }
     }
 
