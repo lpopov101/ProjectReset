@@ -15,8 +15,6 @@ public abstract partial class InventoryItem : Resource
     [Export]
     protected PackedScene _DisplayModelTemplate;
 
-    protected Inventory _inventory;
-
     public InventoryItem()
         : this("unknown", "unknown", 1, null, null) { }
 
@@ -32,12 +30,6 @@ public abstract partial class InventoryItem : Resource
         _Description = description;
         _Weight = weight;
         _DisplayModelTemplate = displayModelTemplate;
-        _inventory = inventory;
-    }
-
-    public void SetInventory(Inventory inventory)
-    {
-        _inventory = inventory;
     }
 
     public string GetName()

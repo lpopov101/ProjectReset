@@ -10,6 +10,6 @@ public partial class TestInventoryItem : InventoryItem
     public override void Use(Player player)
     {
         Locator<PlayerManager>.Get().Player1().Heal(10);
-        _inventory.RemoveItem(this);
+        player.GetInventory().RemoveItem(this);
     }
 }

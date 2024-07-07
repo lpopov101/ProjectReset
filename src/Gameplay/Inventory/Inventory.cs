@@ -46,7 +46,6 @@ public class Inventory
         if (!_itemDict.ContainsKey(name))
         {
             _itemDict[name] = new InventoryItemWithQuantity(item, 0);
-            _itemDict[name].Item.SetInventory(this);
         }
         _itemDict[name].Quantity += quantity;
         _remainingCapcaity -= item.GetWeight() * quantity;
