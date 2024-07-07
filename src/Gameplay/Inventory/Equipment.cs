@@ -17,12 +17,12 @@ public class Equipment
 
     private Dictionary<EquipSlot, EquippableInventoryItem> _equipmentDict;
 
-    private PriorityQueue<EquipSlot, ulong> _lastEquippedSlotQueue;
+    private Dictionary<EquipSlot, ulong> _lastEquippedTimeDict;
 
     public Equipment()
     {
         _equipmentDict = new Dictionary<EquipSlot, EquippableInventoryItem>();
-        _lastEquippedSlotQueue = new PriorityQueue<EquipSlot, ulong>();
+        _lastEquippedTimeDict = new Dictionary<EquipSlot, ulong>();
     }
 
     public void EquipItem(EquippableInventoryItem item)
@@ -30,8 +30,9 @@ public class Equipment
         var maybeBestEquipSlot = GetBestEquipSlot(item.GetCompatibleSlots());
         if (maybeBestEquipSlot.HasValue)
         {
-            _equipmentDict[maybeBestEquipSlot.Value] = item;
-            _lastEquippedSlotQueue.Enqueue(maybeBestEquipSlot.Value);
+            var bestEquipSlot = maybeBestEquipSlot.Value;
+            _equipmentDict[bestEquipSlot] = item;
+            _lastEquippedTimeDict[bestEquipSlot] = Time.GetTicksMsec();
             item.SetEquipped(true);
         }
     }
@@ -85,14 +86,25 @@ public class Equipment
         {
             return null;
         }
+        Nullable<EquipSlot> mostStaleSlot = null;
+        var mostStaleTime = ulong.MaxValue;
         foreach (var compatibleSlot in compatibleSlots)
         {
             if (!_equipmentDict.ContainsKey(compatibleSlot))
             {
                 return compatibleSlot;
             }
+
+            if (
+                _lastEquippedTimeDict.ContainsKey(compatibleSlot)
+                && _lastEquippedTimeDict[compatibleSlot] < mostStaleTime
+            )
+            {
+                mostStaleTime = _lastEquippedTimeDict[compatibleSlot];
+                mostStaleSlot = compatibleSlot;
+            }
         }
 
-        return null;
+        return mostStaleSlot;
     }
 }
