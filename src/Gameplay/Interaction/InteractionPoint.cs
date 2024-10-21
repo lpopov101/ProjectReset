@@ -158,6 +158,27 @@ public partial class InteractionPoint : Node3D
         _stateMachine.ProcessState();
     }
 
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        if (IsCurInteractablePoint())
+        {
+            CurInteractablePoint = null;
+        }
+        VisibleInteractionPointRemoved.Invoke(this);
+    }
+
+    public void SetUpPrompt(
+        string interactionPrompt,
+        float maxInteractionHintDistance,
+        float maxInteractionDistance
+    )
+    {
+        _InteractionPrompt = interactionPrompt;
+        _MaxInteractionHintDistance = maxInteractionHintDistance;
+        _MaxInteractionDistance = maxInteractionDistance;
+    }
+
     public Vector2 GetScreenCoords()
     {
         return _screenCoords;
