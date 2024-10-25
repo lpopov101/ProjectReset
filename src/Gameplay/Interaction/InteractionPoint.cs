@@ -37,6 +37,7 @@ public partial class InteractionPoint : Node3D
     private Camera3D _camera;
     private float _distanceFromCamera = 0F;
     private Vector2 _screenCoords = Vector2.Zero;
+    private bool _enabled = true;
 
     public override void _Ready()
     {
@@ -50,7 +51,8 @@ public partial class InteractionPoint : Node3D
             () =>
             {
                 return !_camera.IsPositionBehind(GlobalPosition)
-                    && _distanceFromCamera < _MaxInteractionHintDistance;
+                    && _distanceFromCamera < _MaxInteractionHintDistance
+                    && _enabled;
             }
         );
 
@@ -97,7 +99,8 @@ public partial class InteractionPoint : Node3D
             () =>
             {
                 return _camera.IsPositionBehind(GlobalPosition)
-                    || _distanceFromCamera > _MaxInteractionHintDistance;
+                    || _distanceFromCamera > _MaxInteractionHintDistance
+                    || !_enabled;
             }
         );
 
@@ -158,16 +161,6 @@ public partial class InteractionPoint : Node3D
         _stateMachine.ProcessState();
     }
 
-    public override void _ExitTree()
-    {
-        base._ExitTree();
-        if (IsCurInteractablePoint())
-        {
-            CurInteractablePoint = null;
-        }
-        VisibleInteractionPointRemoved.Invoke(this);
-    }
-
     public void SetUpPrompt(
         string interactionPrompt,
         float maxInteractionHintDistance,
@@ -177,6 +170,11 @@ public partial class InteractionPoint : Node3D
         _InteractionPrompt = interactionPrompt;
         _MaxInteractionHintDistance = maxInteractionHintDistance;
         _MaxInteractionDistance = maxInteractionDistance;
+    }
+
+    public void setEnabled(bool enabled)
+    {
+        _enabled = enabled;
     }
 
     public Vector2 GetScreenCoords()

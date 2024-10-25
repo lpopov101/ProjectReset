@@ -15,6 +15,9 @@ public partial class ItemPickup : Node3D
     [Export]
     private float _MaxInteractionDistance = 5F;
 
+    [Export]
+    private AudioStream _pickupSound;
+
     private InteractionPoint _interactionPoint;
 
     public override void _Ready()
@@ -36,6 +39,15 @@ public partial class ItemPickup : Node3D
     private void PickUp()
     {
         Locator<PlayerManager>.Get().Player1().GetInventory().TryAddItem(_inventoryItem);
+        if (_pickupSound != null)
+        {
+            Locator<SoundManager>
+                .Get()
+                .Spawn3DAudioAsSibling(_pickupSound, this)
+                .WithPitchVariation(0.1F)
+                .PlayOnce();
+        }
+        _interactionPoint.setEnabled(false);
         QueueFree();
     }
 }
