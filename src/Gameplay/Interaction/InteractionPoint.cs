@@ -161,15 +161,9 @@ public partial class InteractionPoint : Node3D
         _stateMachine.ProcessState();
     }
 
-    public void SetUpPrompt(
-        string interactionPrompt,
-        float maxInteractionHintDistance,
-        float maxInteractionDistance
-    )
+    public void SetPrompt(string interactionPrompt)
     {
         _InteractionPrompt = interactionPrompt;
-        _MaxInteractionHintDistance = maxInteractionHintDistance;
-        _MaxInteractionDistance = maxInteractionDistance;
     }
 
     public void setEnabled(bool enabled)

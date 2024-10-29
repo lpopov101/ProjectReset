@@ -7,15 +7,6 @@ public partial class ItemPickup : Node3D
     private InventoryItem _inventoryItem;
 
     [Export]
-    private string _InteractionPrompt = "Interact";
-
-    [Export]
-    private float _MaxInteractionHintDistance = 50F;
-
-    [Export]
-    private float _MaxInteractionDistance = 5F;
-
-    [Export]
     private AudioStream _pickupSound;
 
     private InteractionPoint _interactionPoint;
@@ -23,12 +14,12 @@ public partial class ItemPickup : Node3D
     public override void _Ready()
     {
         base._Ready();
-        _interactionPoint = new InteractionPoint();
-        _interactionPoint.SetUpPrompt(
-            _InteractionPrompt,
-            _MaxInteractionHintDistance,
-            _MaxInteractionDistance
-        );
+        _interactionPoint = GetNode<InteractionPoint>($"{GetPath()}/InteractionPoint");
+        if (_interactionPoint == null)
+        {
+            _interactionPoint = new InteractionPoint();
+            _interactionPoint.SetPrompt("Pick Up");
+        }
         _interactionPoint.Connect(
             InteractionPoint.SignalName.OnInteract,
             new Callable(this, nameof(PickUp))

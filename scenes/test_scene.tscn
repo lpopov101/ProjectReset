@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=4 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=62 format=4 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
@@ -216,6 +216,11 @@ size = Vector3(5, 0.333, 5)
 
 [sub_resource type="SphereMesh" id="SphereMesh_htmtw"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_ixwah"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qt4st"]
+size = Vector3(0.2, 4, 2.5)
+
 [node name="TestScene" type="Node3D"]
 process_mode = 1
 
@@ -399,77 +404,122 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Elevator2/StaticBody3D"]
 shape = SubResource("BoxShape3D_en37q")
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="Pickup" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.2642, -0.743449, -1.9473)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("13_pg5t7")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pickup"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_l8nw8")
 
-[node name="Node3D2" type="Node3D" parent="."]
+[node name="InteractionPoint" type="Node3D" parent="Pickup"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="Pickup2" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.384, -0.743449, -1.9473)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("13_pg5t7")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pickup2"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_l8nw8")
 
-[node name="Node3D3" type="Node3D" parent="."]
+[node name="InteractionPoint" type="Node3D" parent="Pickup2"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="Pickup3" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4036, -0.743449, -1.9473)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("13_pg5t7")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pickup3"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_l8nw8")
 
-[node name="Node3D4" type="Node3D" parent="."]
+[node name="InteractionPoint" type="Node3D" parent="Pickup3"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="EquippablePickup" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.2642, -0.743449, 0.99972)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("17_7cqhl")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EquippablePickup"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("SphereMesh_htmtw")
 
-[node name="Node3D5" type="Node3D" parent="."]
+[node name="InteractionPoint" type="Node3D" parent="EquippablePickup"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="EquippablePickup2" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.384, -0.743449, 0.99972)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("17_7cqhl")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D5"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EquippablePickup2"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("SphereMesh_htmtw")
 
-[node name="Node3D6" type="Node3D" parent="."]
+[node name="InteractionPoint" type="Node3D" parent="EquippablePickup2"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="EquippablePickup3" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4036, -0.743449, 0.99972)
 script = ExtResource("16_vrei2")
 _inventoryItem = ExtResource("17_7cqhl")
-_InteractionPrompt = "Pick Up"
-_MaxInteractionHintDistance = 8.0
-_MaxInteractionDistance = 3.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D6"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EquippablePickup3"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("SphereMesh_htmtw")
+
+[node name="InteractionPoint" type="Node3D" parent="EquippablePickup3"]
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "Pick Up"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="Door" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, 1.5, -0.25)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Door"]
+transform = Transform3D(0.2, 0, 0, 0, 4, 0, 0, 0, 2.5, 0, 0, 0)
+mesh = SubResource("BoxMesh_ixwah")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door"]
+shape = SubResource("BoxShape3D_qt4st")
+
+[node name="Hinge" type="Node3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2496)
+
+[node name="FrontInteractionPoint" type="Node3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, -0.5, -0.8)
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "InteractOpen"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
+
+[node name="BackInteractionPoint" type="Node3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, -0.5, -0.8)
+script = ExtResource("7_gqb1a")
+_InteractionPrompt = "InteractOpen"
+_MaxInteractionHintDistance = 10.0
+_MaxInteractionDistance = 3.0
 
 [connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
 [connection signal="OnInteract" from="Elevator2/InteractionPoint" to="Elevator2" method="Toggle"]
