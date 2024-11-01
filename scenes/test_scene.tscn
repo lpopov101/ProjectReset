@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=4 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=63 format=4 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
@@ -12,6 +12,7 @@
 [ext_resource type="ArrayOccluder3D" uid="uid://c7xx24s1g8es5" path="res://scenes/test_scene.occ" id="7_rhq3e"]
 [ext_resource type="Script" path="res://src/Gameplay/Environment/TestElevator.cs" id="9_5ildg"]
 [ext_resource type="Resource" uid="uid://demnjjllcarq8" path="res://resources/inventory items/test_inventory_item.tres" id="13_pg5t7"]
+[ext_resource type="Script" path="res://src/Gameplay/Environment/Door.cs" id="15_lt7sd"]
 [ext_resource type="Script" path="res://src/Gameplay/Inventory/ItemPickup.cs" id="16_vrei2"]
 [ext_resource type="Resource" uid="uid://d2d783dgk1rdn" path="res://resources/inventory items/test_equippable_inventory_item.tres" id="17_7cqhl"]
 
@@ -219,7 +220,7 @@ size = Vector3(5, 0.333, 5)
 [sub_resource type="BoxMesh" id="BoxMesh_ixwah"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qt4st"]
-size = Vector3(0.2, 4, 2.5)
+size = Vector3(1, 4, 2.5)
 
 [node name="TestScene" type="Node3D"]
 process_mode = 1
@@ -332,6 +333,7 @@ shape = SubResource("ConvexPolygonShape3D_3mqn6")
 
 [node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("_StairProbe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47145, 0)
+collision_layer = 3
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
 _GroundedMovementSpeed = 10.0
@@ -494,32 +496,46 @@ _InteractionPrompt = "Pick Up"
 _MaxInteractionHintDistance = 10.0
 _MaxInteractionDistance = 3.0
 
-[node name="Door" type="StaticBody3D" parent="."]
+[node name="Door" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, 1.5, -0.25)
+script = ExtResource("15_lt7sd")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Door"]
+[node name="Panel" type="RigidBody3D" parent="Door"]
+collision_layer = 2
+collision_mask = 2
+axis_lock_linear_y = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Door/Panel"]
 transform = Transform3D(0.2, 0, 0, 0, 4, 0, 0, 0, 2.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_ixwah")
+skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Door"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door/Panel"]
 shape = SubResource("BoxShape3D_qt4st")
 
-[node name="Hinge" type="Node3D" parent="Door"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2496)
-
-[node name="FrontInteractionPoint" type="Node3D" parent="Door"]
+[node name="FrontInteractionPoint" type="Node3D" parent="Door/Panel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, -0.5, -0.8)
 script = ExtResource("7_gqb1a")
-_InteractionPrompt = "InteractOpen"
+_InteractionPrompt = "Open"
 _MaxInteractionHintDistance = 10.0
 _MaxInteractionDistance = 3.0
 
-[node name="BackInteractionPoint" type="Node3D" parent="Door"]
+[node name="BackInteractionPoint" type="Node3D" parent="Door/Panel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, -0.5, -0.8)
 script = ExtResource("7_gqb1a")
-_InteractionPrompt = "InteractOpen"
+_InteractionPrompt = "Open"
 _MaxInteractionHintDistance = 10.0
 _MaxInteractionDistance = 3.0
+
+[node name="Hinge" type="HingeJoint3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 1.5)
+node_b = NodePath("../Panel")
+angular_limit/enable = true
+angular_limit/lower = 0.0
+motor/enable = true
+motor/target_velocity = -1.00007
 
 [connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
 [connection signal="OnInteract" from="Elevator2/InteractionPoint" to="Elevator2" method="Toggle"]

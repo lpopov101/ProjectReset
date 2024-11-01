@@ -166,7 +166,7 @@ public partial class InteractionPoint : Node3D
         _InteractionPrompt = interactionPrompt;
     }
 
-    public void setEnabled(bool enabled)
+    public void SetEnabled(bool enabled)
     {
         _enabled = enabled;
     }

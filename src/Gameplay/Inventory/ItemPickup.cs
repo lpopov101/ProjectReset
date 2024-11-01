@@ -19,12 +19,12 @@ public partial class ItemPickup : Node3D
         {
             _interactionPoint = new InteractionPoint();
             _interactionPoint.SetPrompt("Pick Up");
+            AddChild(_interactionPoint);
         }
         _interactionPoint.Connect(
             InteractionPoint.SignalName.OnInteract,
             new Callable(this, nameof(PickUp))
         );
-        AddChild(_interactionPoint);
     }
 
     private void PickUp()
@@ -38,7 +38,7 @@ public partial class ItemPickup : Node3D
                 .WithPitchVariation(0.1F)
                 .PlayOnce();
         }
-        _interactionPoint.setEnabled(false);
+        _interactionPoint.SetEnabled(false);
         QueueFree();
     }
 }
