@@ -10,7 +10,14 @@ public partial class Door : Node3D
         Closing
     }
 
-    const string OPEN_EVENT_NAME = "Open";
+    private const string OPEN_EVENT_NAME = "Open";
+    private const float ANGLE_EPSILON = 0.05F;
+
+    [Export]
+    private float _DoorOpenDegrees = 20F;
+
+    [Export]
+    private float _DoorMotorSpeed = 80F;
 
     private StateMachine<State> _stateMachine;
 
@@ -88,36 +95,19 @@ public partial class Door : Node3D
             State.Closed,
             () =>
             {
-                return Mathf.Abs(_panel.Rotation.Y) < 0.1F;
+                return Mathf.Abs(_panel.Rotation.Y) < ANGLE_EPSILON;
             }
         );
 
-        _stateMachine.addStateEnterAction(
-            State.Closed,
-            () =>
-            {
-                Locator<MessageManager>.Get().AddMessage("Door closed");
-                Lock();
-                _frontInteractionPoint.SetEnabled(true);
-                _backInteractionPoint.SetEnabled(true);
-            }
-        );
-        _stateMachine.addStateProcessAction(
-            State.Closed,
-            () =>
-            {
-                SelectInteractionPoint();
-            }
-        );
+        _stateMachine.addStateEnterAction(State.Closed, Lock);
+        _stateMachine.addStateProcessAction(State.Closed, SelectInteractionPoint);
         _stateMachine.addStateEnterAction(
             State.Open,
             () =>
             {
-                Locator<MessageManager>.Get().AddMessage("Door opened");
                 Unlock();
-                _targetYRotation = (PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(15F);
-                _frontInteractionPoint.SetEnabled(false);
-                _backInteractionPoint.SetEnabled(false);
+                _targetYRotation =
+                    (PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(_DoorOpenDegrees);
             }
         );
         _stateMachine.addStateProcessAction(State.Open, SetHingeMotorToTarget);
@@ -125,7 +115,6 @@ public partial class Door : Node3D
             State.Closing,
             () =>
             {
-                Locator<MessageManager>.Get().AddMessage("Door closing");
                 _targetYRotation = 0F;
             }
         );
@@ -176,30 +165,40 @@ public partial class Door : Node3D
         _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, 0.0F);
         _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, 0.0F);
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, true);
+        _frontInteractionPoint.SetEnabled(true);
+        _backInteractionPoint.SetEnabled(true);
     }
 
     private void Unlock()
     {
         _hingeJoint.SetFlag(HingeJoint3D.Flag.EnableMotor, true);
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, -90.0F);
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, 90.0F);
+        _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, Mathf.DegToRad(-90.0F));
+        _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, Mathf.DegToRad(90.0F));
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, false);
+        _frontInteractionPoint.SetEnabled(false);
+        _backInteractionPoint.SetEnabled(false);
     }
 
     private void SetHingeMotorToTarget()
     {
-        if (Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < 0.05F)
+        if (Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON)
         {
             _hingeJoint.SetParam(HingeJoint3D.Param.MotorTargetVelocity, 0.0F);
             return;
         }
         if (_panel.Rotation.Y > _targetYRotation)
         {
-            _hingeJoint.SetParam(HingeJoint3D.Param.MotorTargetVelocity, Mathf.DegToRad(80.0F));
+            _hingeJoint.SetParam(
+                HingeJoint3D.Param.MotorTargetVelocity,
+                Mathf.DegToRad(_DoorMotorSpeed)
+            );
         }
         else
         {
-            _hingeJoint.SetParam(HingeJoint3D.Param.MotorTargetVelocity, -Mathf.DegToRad(80.0F));
+            _hingeJoint.SetParam(
+                HingeJoint3D.Param.MotorTargetVelocity,
+                -Mathf.DegToRad(_DoorMotorSpeed)
+            );
         }
     }
 }
