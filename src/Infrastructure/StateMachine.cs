@@ -23,6 +23,7 @@ public class StateMachine<State>
     private IDictionary<State, Action> _stateEnterActions;
     private IDictionary<State, Action> _stateExitActions;
     private IDictionary<State, List<Transition>> _stateTransitions;
+    private HashSet<string> _eventSet;
 
     public StateMachine(State initialState)
     {
@@ -31,6 +32,7 @@ public class StateMachine<State>
         _stateEnterActions = new Dictionary<State, Action>();
         _stateExitActions = new Dictionary<State, Action>();
         _stateTransitions = new Dictionary<State, List<Transition>>();
+        _eventSet = new HashSet<string>();
     }
 
     public State getCurrentState()
@@ -67,6 +69,16 @@ public class StateMachine<State>
         _stateTransitions[fromState].Add(new Transition(toState, transitionFunc, priority));
     }
 
+    public void addStateTransition(
+        State fromState,
+        State toState,
+        string eventName,
+        int priority = 0
+    )
+    {
+        addStateTransition(fromState, toState, () => _eventSet.Contains(eventName), priority);
+    }
+
     public void addStateTransitions(
         State[] fromStates,
         State toState,
@@ -80,10 +92,29 @@ public class StateMachine<State>
         }
     }
 
+    public void addStateTransitions(
+        State[] fromStates,
+        State toState,
+        string eventName,
+        int priority = 0
+    )
+    {
+        foreach (var fromState in fromStates)
+        {
+            addStateTransition(fromState, toState, eventName, priority);
+        }
+    }
+
     public void ProcessState()
     {
         RunStateProcessAction();
         RunStateTransitions();
+        _eventSet.Clear();
+    }
+
+    public void SendEvent(string eventName)
+    {
+        _eventSet.Add(eventName);
     }
 
     private void RunStateProcessAction()

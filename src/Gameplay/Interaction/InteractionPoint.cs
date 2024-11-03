@@ -33,6 +33,9 @@ public partial class InteractionPoint : Node3D
     [Export]
     private float _MaxInteractionDistance = 5F;
 
+    [Export]
+    private bool _IgnoreObstructions = true;
+
     private StateMachine<State> _stateMachine;
     private Camera3D _camera;
     private float _distanceFromCamera = 0F;
@@ -219,6 +222,10 @@ public partial class InteractionPoint : Node3D
 
     private bool IsUnobstructedFromCamera()
     {
+        if (_IgnoreObstructions)
+        {
+            return true;
+        }
         var directionFromCamera = (GlobalPosition - _camera.GlobalPosition).Normalized();
         var hit = new RaycastBuilder(this)
             .FromPosition(_camera.GlobalPosition)

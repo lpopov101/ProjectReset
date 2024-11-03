@@ -49,6 +49,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
 
     public override void _Ready()
     {
+        SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, true);
         _stateMachine = new StateMachine<State>(State.Airborne);
         _camera = GetViewport().GetCamera3D();
         FloorSnapLength = _MaxStairHeight + 0.1F;

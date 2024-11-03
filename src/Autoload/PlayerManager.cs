@@ -4,6 +4,7 @@ using Godot;
 
 public partial class PlayerManager : Node
 {
+    public static int PLAYER_COLLISION_LAYER = 2;
     private List<Player> _players;
 
     public override void _Ready()

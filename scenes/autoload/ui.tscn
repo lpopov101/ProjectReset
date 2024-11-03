@@ -63,6 +63,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_e8w0h")
 _InteractionOverlayTemplate = ExtResource("4_fw4ae")
+_ShowKeyPrompts = false
 
 [node name="Menu" type="Control" parent="UIBase"]
 process_mode = 2

@@ -334,6 +334,7 @@ shape = SubResource("ConvexPolygonShape3D_3mqn6")
 [node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("_StairProbe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47145, 0)
 collision_layer = 3
+collision_mask = 3
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
 _GroundedMovementSpeed = 10.0
@@ -506,6 +507,8 @@ collision_mask = 2
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
+contact_monitor = true
+max_contacts_reported = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Door/Panel"]
 transform = Transform3D(0.2, 0, 0, 0, 4, 0, 0, 0, 2.5, 0, 0, 0)
@@ -519,14 +522,14 @@ shape = SubResource("BoxShape3D_qt4st")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, -0.5, -0.8)
 script = ExtResource("7_gqb1a")
 _InteractionPrompt = "Open"
-_MaxInteractionHintDistance = 10.0
+_MaxInteractionHintDistance = 6.0
 _MaxInteractionDistance = 3.0
 
 [node name="BackInteractionPoint" type="Node3D" parent="Door/Panel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, -0.5, -0.8)
 script = ExtResource("7_gqb1a")
 _InteractionPrompt = "Open"
-_MaxInteractionHintDistance = 10.0
+_MaxInteractionHintDistance = 6.0
 _MaxInteractionDistance = 3.0
 
 [node name="Hinge" type="HingeJoint3D" parent="Door"]
