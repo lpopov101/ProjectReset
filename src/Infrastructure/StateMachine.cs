@@ -23,7 +23,7 @@ public class StateMachine<State>
     private IDictionary<State, Action> _stateEnterActions;
     private IDictionary<State, Action> _stateExitActions;
     private IDictionary<State, List<Transition>> _stateTransitions;
-    private HashSet<string> _eventSet;
+    private HashSet<int> _eventSet;
 
     public StateMachine(State initialState)
     {
@@ -32,7 +32,7 @@ public class StateMachine<State>
         _stateEnterActions = new Dictionary<State, Action>();
         _stateExitActions = new Dictionary<State, Action>();
         _stateTransitions = new Dictionary<State, List<Transition>>();
-        _eventSet = new HashSet<string>();
+        _eventSet = new HashSet<int>();
     }
 
     public State getCurrentState()
@@ -69,14 +69,9 @@ public class StateMachine<State>
         _stateTransitions[fromState].Add(new Transition(toState, transitionFunc, priority));
     }
 
-    public void addStateTransition(
-        State fromState,
-        State toState,
-        string eventName,
-        int priority = 0
-    )
+    public void addStateTransition(State fromState, State toState, int eventID, int priority = 0)
     {
-        addStateTransition(fromState, toState, () => _eventSet.Contains(eventName), priority);
+        addStateTransition(fromState, toState, () => _eventSet.Contains(eventID), priority);
     }
 
     public void addStateTransitions(
@@ -95,13 +90,13 @@ public class StateMachine<State>
     public void addStateTransitions(
         State[] fromStates,
         State toState,
-        string eventName,
+        int eventID,
         int priority = 0
     )
     {
         foreach (var fromState in fromStates)
         {
-            addStateTransition(fromState, toState, eventName, priority);
+            addStateTransition(fromState, toState, eventID, priority);
         }
     }
 
@@ -112,9 +107,9 @@ public class StateMachine<State>
         _eventSet.Clear();
     }
 
-    public void SendEvent(string eventName)
+    public void SendEvent(int eventID)
     {
-        _eventSet.Add(eventName);
+        _eventSet.Add(eventID);
     }
 
     private void RunStateProcessAction()

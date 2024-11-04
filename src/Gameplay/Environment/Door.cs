@@ -10,6 +10,12 @@ public partial class Door : Node3D
         Closing
     }
 
+    private enum StateMachineEvents
+    {
+        Open,
+        Close
+    }
+
     private const string OPEN_EVENT_NAME = "Open";
     private const string CLOSE_EVENT_NAME = "Close";
     private const float ANGLE_EPSILON = 0.1F;
@@ -98,8 +104,8 @@ public partial class Door : Node3D
             }
         };
 
-        _stateMachine.addStateTransition(State.Closed, State.Open, OPEN_EVENT_NAME);
-        _stateMachine.addStateTransition(State.Open, State.Closing, CLOSE_EVENT_NAME);
+        _stateMachine.addStateTransition(State.Closed, State.Open, (int)StateMachineEvents.Open);
+        _stateMachine.addStateTransition(State.Open, State.Closing, (int)StateMachineEvents.Close);
         _stateMachine.addStateTransition(
             State.Open,
             State.Closing,
@@ -176,12 +182,12 @@ public partial class Door : Node3D
 
     private void SignalOpen()
     {
-        _stateMachine.SendEvent(OPEN_EVENT_NAME);
+        _stateMachine.SendEvent((int)StateMachineEvents.Open);
     }
 
     private void SignalClose()
     {
-        _stateMachine.SendEvent(CLOSE_EVENT_NAME);
+        _stateMachine.SendEvent((int)StateMachineEvents.Close);
     }
 
     private void Lock()
