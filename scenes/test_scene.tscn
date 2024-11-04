@@ -500,7 +500,6 @@ _MaxInteractionDistance = 3.0
 [node name="Door" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, 1.5, -0.25)
 script = ExtResource("15_lt7sd")
-_AutoCloseTime = 5.0
 
 [node name="Panel" type="RigidBody3D" parent="Door"]
 collision_layer = 2
