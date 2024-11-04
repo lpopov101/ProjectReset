@@ -201,13 +201,11 @@ public partial class Door : Node3D
 
     private void MoveTowardsTarget()
     {
+        var fullyOpen = Mathf.Abs(_panel.Rotation.Y) > Mathf.DegToRad(90F) - ANGLE_EPSILON;
         // Prevent player from clipping through door if all the way open
-        _panel.SetCollisionLayerValue(
-            PlayerManager.PLAYER_COLLISION_LAYER,
-            Mathf.Abs(Mathf.RadToDeg(_panel.Rotation.Y)) > 90F
-        );
-
-        if (Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON)
+        _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, fullyOpen);
+        var reachedTarget = Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON;
+        if ((fullyOpen && _touchingPlayer) || reachedTarget)
         {
             _panel.AngularVelocity = Vector3.Zero;
             return;
