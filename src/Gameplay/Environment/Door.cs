@@ -15,13 +15,16 @@ public partial class Door : Node3D
     private const float ANGLE_EPSILON = 0.1F;
 
     [Export]
-    private float _OpenDegrees = 20F;
+    private float _AutoOpenDegrees = 20F;
+
+    [Export]
+    private float _OpenDegreesLimit = 90F;
 
     [Export]
     private float _OpenForce = 10F;
 
     [Export]
-    private float _AutoCloseTime = 2F;
+    private float _AutoCloseTime = 5F;
 
     private StateMachine<State> _stateMachine;
 
@@ -122,7 +125,7 @@ public partial class Door : Node3D
                 _autoCloseTimer.Start(_AutoCloseTime);
                 _targetYRotation =
                     _initYRotation
-                    + ((PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(_OpenDegrees));
+                    + ((PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(_AutoOpenDegrees));
             }
         );
         _stateMachine.addStateProcessAction(State.Open, MoveTowardsTarget);
@@ -192,8 +195,14 @@ public partial class Door : Node3D
 
     private void Unlock()
     {
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, _initYRotation - Mathf.DegToRad(90.0F));
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, _initYRotation + Mathf.DegToRad(90.0F));
+        _hingeJoint.SetParam(
+            HingeJoint3D.Param.LimitLower,
+            _initYRotation - Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees))
+        );
+        _hingeJoint.SetParam(
+            HingeJoint3D.Param.LimitUpper,
+            _initYRotation + Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees))
+        );
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, false);
         _frontInteractionPoint.SetEnabled(false);
         _backInteractionPoint.SetEnabled(false);
@@ -201,7 +210,9 @@ public partial class Door : Node3D
 
     private void MoveTowardsTarget()
     {
-        var fullyOpen = Mathf.Abs(_panel.Rotation.Y) > Mathf.DegToRad(90F) - ANGLE_EPSILON;
+        var fullyOpen =
+            Mathf.Abs(_panel.Rotation.Y)
+            > Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees)) - ANGLE_EPSILON;
         // Prevent player from clipping through door if all the way open
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, fullyOpen);
         var reachedTarget = Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON;
