@@ -197,11 +197,11 @@ public partial class Door : Node3D
     {
         _hingeJoint.SetParam(
             HingeJoint3D.Param.LimitLower,
-            _initYRotation - Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees))
+            _initYRotation - Mathf.DegToRad(Mathf.Abs(_OpenDegreesLimit))
         );
         _hingeJoint.SetParam(
             HingeJoint3D.Param.LimitUpper,
-            _initYRotation + Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees))
+            _initYRotation + Mathf.DegToRad(Mathf.Abs(_OpenDegreesLimit))
         );
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, false);
         _frontInteractionPoint.SetEnabled(false);
@@ -212,7 +212,7 @@ public partial class Door : Node3D
     {
         var fullyOpen =
             Mathf.Abs(_panel.Rotation.Y)
-            > Mathf.DegToRad(Mathf.Abs(_AutoOpenDegrees)) - ANGLE_EPSILON;
+            > Mathf.DegToRad(Mathf.Abs(_OpenDegreesLimit)) - ANGLE_EPSILON;
         // Prevent player from clipping through door if all the way open
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, fullyOpen);
         var reachedTarget = Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON;
