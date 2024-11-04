@@ -11,13 +11,17 @@ public partial class Door : Node3D
     }
 
     private const string OPEN_EVENT_NAME = "Open";
-    private const float ANGLE_EPSILON = 0.05F;
+    private const string CLOSE_EVENT_NAME = "Close";
+    private const float ANGLE_EPSILON = 0.1F;
 
     [Export]
-    private float _DoorOpenDegrees = 20F;
+    private float _OpenDegrees = 20F;
 
     [Export]
-    private float _DoorMotorSpeed = 80F;
+    private float _OpenForce = 10F;
+
+    [Export]
+    private float _AutoCloseTime = 2F;
 
     private StateMachine<State> _stateMachine;
 
@@ -25,16 +29,21 @@ public partial class Door : Node3D
     private HingeJoint3D _hingeJoint;
     private InteractionPoint _frontInteractionPoint;
     private InteractionPoint _backInteractionPoint;
+    private Timer _autoCloseTimer;
+    private float _initYRotation;
+    private float _targetYRotation;
     private bool _touchingPlayer = false;
-    private double _targetYRotation = 0.0;
 
     public override void _Ready()
     {
         base._Ready();
         _stateMachine = new StateMachine<State>(State.Closed);
+        _autoCloseTimer = new Timer();
         _panel = GetNode<RigidBody3D>($"{GetPath()}/Panel");
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, true);
         _panel.SetCollisionMaskValue(PlayerManager.PLAYER_COLLISION_LAYER, true);
+        _initYRotation = _panel.Rotation.Y;
+        _targetYRotation = _initYRotation;
         _hingeJoint = GetNode<HingeJoint3D>($"{GetPath()}/Hinge");
 
         _frontInteractionPoint = GetNode<InteractionPoint>(
@@ -65,6 +74,11 @@ public partial class Door : Node3D
             new Callable(this, nameof(SignalOpen))
         );
 
+        _autoCloseTimer = new Timer();
+        _autoCloseTimer.OneShot = true;
+        AddChild(_autoCloseTimer);
+        _autoCloseTimer.Connect(Timer.SignalName.Timeout, new Callable(this, nameof(SignalClose)));
+
         _panel.BodyEntered += (body) =>
         {
             if (body is IPlayer)
@@ -82,6 +96,7 @@ public partial class Door : Node3D
         };
 
         _stateMachine.addStateTransition(State.Closed, State.Open, OPEN_EVENT_NAME);
+        _stateMachine.addStateTransition(State.Open, State.Closing, CLOSE_EVENT_NAME);
         _stateMachine.addStateTransition(
             State.Open,
             State.Closing,
@@ -95,30 +110,32 @@ public partial class Door : Node3D
             State.Closed,
             () =>
             {
-                return Mathf.Abs(_panel.Rotation.Y) < ANGLE_EPSILON;
+                return Mathf.Abs(_panel.Rotation.Y - _initYRotation) < ANGLE_EPSILON;
             }
         );
 
-        _stateMachine.addStateEnterAction(State.Closed, Lock);
-        _stateMachine.addStateProcessAction(State.Closed, SelectInteractionPoint);
         _stateMachine.addStateEnterAction(
             State.Open,
             () =>
             {
                 Unlock();
+                _autoCloseTimer.Start(_AutoCloseTime);
                 _targetYRotation =
-                    (PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(_DoorOpenDegrees);
+                    _initYRotation
+                    + ((PlayerCloserToFront() ? 1F : -1F) * Mathf.DegToRad(_OpenDegrees));
             }
         );
-        _stateMachine.addStateProcessAction(State.Open, SetHingeMotorToTarget);
+        _stateMachine.addStateProcessAction(State.Open, MoveTowardsTarget);
         _stateMachine.addStateEnterAction(
             State.Closing,
             () =>
             {
-                _targetYRotation = 0F;
+                _targetYRotation = _initYRotation;
             }
         );
-        _stateMachine.addStateProcessAction(State.Closing, SetHingeMotorToTarget);
+        _stateMachine.addStateProcessAction(State.Closing, MoveTowardsTarget);
+        _stateMachine.addStateEnterAction(State.Closed, Lock);
+        _stateMachine.addStateProcessAction(State.Closed, SelectInteractionPoint);
     }
 
     public override void _Process(double delta)
@@ -159,9 +176,13 @@ public partial class Door : Node3D
         _stateMachine.SendEvent(OPEN_EVENT_NAME);
     }
 
+    private void SignalClose()
+    {
+        _stateMachine.SendEvent(CLOSE_EVENT_NAME);
+    }
+
     private void Lock()
     {
-        _hingeJoint.SetFlag(HingeJoint3D.Flag.EnableMotor, false);
         _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, 0.0F);
         _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, 0.0F);
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, true);
@@ -171,34 +192,27 @@ public partial class Door : Node3D
 
     private void Unlock()
     {
-        _hingeJoint.SetFlag(HingeJoint3D.Flag.EnableMotor, true);
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, Mathf.DegToRad(-90.0F));
-        _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, Mathf.DegToRad(90.0F));
+        _hingeJoint.SetParam(HingeJoint3D.Param.LimitLower, _initYRotation - Mathf.DegToRad(90.0F));
+        _hingeJoint.SetParam(HingeJoint3D.Param.LimitUpper, _initYRotation + Mathf.DegToRad(90.0F));
         _panel.SetCollisionLayerValue(PlayerManager.PLAYER_COLLISION_LAYER, false);
         _frontInteractionPoint.SetEnabled(false);
         _backInteractionPoint.SetEnabled(false);
     }
 
-    private void SetHingeMotorToTarget()
+    private void MoveTowardsTarget()
     {
+        // Prevent player from clipping through door if all the way open
+        _panel.SetCollisionLayerValue(
+            PlayerManager.PLAYER_COLLISION_LAYER,
+            Mathf.Abs(Mathf.RadToDeg(_panel.Rotation.Y)) > 90F
+        );
+
         if (Mathf.Abs(_panel.Rotation.Y - _targetYRotation) < ANGLE_EPSILON)
         {
-            _hingeJoint.SetParam(HingeJoint3D.Param.MotorTargetVelocity, 0.0F);
+            _panel.AngularVelocity = Vector3.Zero;
             return;
         }
-        if (_panel.Rotation.Y > _targetYRotation)
-        {
-            _hingeJoint.SetParam(
-                HingeJoint3D.Param.MotorTargetVelocity,
-                Mathf.DegToRad(_DoorMotorSpeed)
-            );
-        }
-        else
-        {
-            _hingeJoint.SetParam(
-                HingeJoint3D.Param.MotorTargetVelocity,
-                -Mathf.DegToRad(_DoorMotorSpeed)
-            );
-        }
+        var openSpeed = (_targetYRotation - _panel.Rotation.Y) * _OpenForce;
+        _panel.AngularVelocity = new Vector3(0, openSpeed, 0);
     }
 }

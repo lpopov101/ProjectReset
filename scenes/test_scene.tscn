@@ -337,7 +337,7 @@ collision_layer = 3
 collision_mask = 3
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
-_GroundedMovementSpeed = 10.0
+_GroundedMovementSpeed = 7.5
 _MaxHorizontalSpeed = 10.0
 _MaxStairHeight = 1.0
 _StairProbe = NodePath("StairProbe")
@@ -500,6 +500,7 @@ _MaxInteractionDistance = 3.0
 [node name="Door" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, 1.5, -0.25)
 script = ExtResource("15_lt7sd")
+_AutoCloseTime = 5.0
 
 [node name="Panel" type="RigidBody3D" parent="Door"]
 collision_layer = 2
@@ -536,8 +537,8 @@ _MaxInteractionDistance = 3.0
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 1.5)
 node_b = NodePath("../Panel")
 angular_limit/enable = true
+angular_limit/upper = 0.0
 angular_limit/lower = 0.0
-motor/enable = true
 motor/target_velocity = -1.00007
 
 [connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
