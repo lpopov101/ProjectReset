@@ -38,6 +38,11 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
         _navAgent.TargetPosition = targetPosition;
     }
 
+    public virtual Vector3 GetTargetPosition()
+    {
+        return _navAgent.TargetPosition;
+    }
+
     public abstract void Damage(
         float damage,
         IDamageable.DamageType damageType = IDamageable.DamageType.Regular

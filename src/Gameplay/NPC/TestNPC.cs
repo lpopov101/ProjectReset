@@ -22,14 +22,15 @@ public partial class TestNPC : NPC
             .Player1()
             .GetCharacterBody()
             .GlobalPosition;
-        // Transform = Transform.LookingAt(
-        //     GlobalPosition + (GlobalPosition - playerPosition),
-        //     Vector3.Up
-        // );
         setTargetPosition(playerPosition);
         Velocity = getTargetVelocity();
-        Locator<MessageManager>.Get().AddMessage("target velocity: " + getTargetVelocity());
         MoveAndSlide();
+        var lookTarget = new Vector3(
+            GlobalPosition.X + Velocity.X,
+            GlobalPosition.Y,
+            GlobalPosition.Z + Velocity.Z
+        );
+        Transform = Transform.LookingAt(lookTarget, Vector3.Up);
     }
 
     public override void Damage(
