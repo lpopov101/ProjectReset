@@ -55,7 +55,6 @@ public partial class TestNPC : NPC
     {
         base._Process(delta);
         _stateMachine.ProcessState(delta);
-        Locator<MessageManager>.Get().AddMessage($"state: {_stateMachine.getCurrentState()}");
     }
 
     private void moveTowardsPlayer(double delta)
