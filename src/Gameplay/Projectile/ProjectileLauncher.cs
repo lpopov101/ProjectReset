@@ -70,7 +70,7 @@ public partial class ProjectileLauncher : Node3D
     public override void _Process(double delta)
     {
         GlobalRotation = GetParent<Node3D>().GlobalRotation;
-        _stateMachine.ProcessState();
+        _stateMachine.ProcessState(delta);
     }
 
     private void LaunchProjectile()

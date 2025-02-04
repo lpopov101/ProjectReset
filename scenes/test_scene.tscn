@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=4 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=67 format=4 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://c8886usuhrhd7" path="res://models/dude_lowpoly_mirror.blend" id="15_a2e6g"]
 [ext_resource type="Script" path="res://src/Gameplay/Environment/Door.cs" id="15_lt7sd"]
 [ext_resource type="Script" path="res://src/Gameplay/NPC/TestNPC.cs" id="15_o625m"]
-[ext_resource type="Script" path="res://src/Gameplay/NPC/TestAnim.cs" id="16_o2vwi"]
 [ext_resource type="Script" path="res://src/Gameplay/Inventory/ItemPickup.cs" id="16_vrei2"]
 [ext_resource type="Resource" uid="uid://d2d783dgk1rdn" path="res://resources/inventory items/test_equippable_inventory_item.tres" id="17_7cqhl"]
 
@@ -408,7 +407,7 @@ _MaxInteractionHintDistance = 10.0
 _MaxInteractionDistance = 3.0
 
 [node name="Door" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, 1.5, -0.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.3408, 1.5, -0.25)
 script = ExtResource("15_lt7sd")
 
 [node name="Panel" type="RigidBody3D" parent="Door"]
@@ -561,12 +560,13 @@ shape = SubResource("ConvexPolygonShape3D_u4445")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8806, 0.589846, -0.557495)
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("15_o625m")
 _Speed = 3.0
 
 [node name="Model" parent="CharacterBody3D" instance=ExtResource("15_a2e6g")]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0.5, 0)
-script = ExtResource("16_o2vwi")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="CharacterBody3D"]
 path_height_offset = -0.5

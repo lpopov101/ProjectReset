@@ -103,7 +103,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     public override void _Process(double delta)
     {
         _curDelta = (float)delta;
-        _stateMachine.ProcessState();
+        _stateMachine.ProcessState(delta);
     }
 
     private Vector3 getMovementDirection()

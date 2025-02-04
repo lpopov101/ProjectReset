@@ -88,6 +88,6 @@ public partial class UIBase : Control
     public override void _Process(double delta)
     {
         base._Process(delta);
-        _stateMachine.ProcessState();
+        _stateMachine.ProcessState(delta);
     }
 }

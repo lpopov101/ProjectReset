@@ -151,7 +151,7 @@ public partial class Door : Node3D
     {
         base._Process(delta);
 
-        _stateMachine.ProcessState();
+        _stateMachine.ProcessState(delta);
     }
 
     private void SelectInteractionPoint()

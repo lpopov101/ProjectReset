@@ -161,7 +161,7 @@ public partial class InteractionPoint : Node3D
         _distanceFromCamera = GlobalPosition.DistanceTo(_camera.GlobalPosition);
         _screenCoords = _camera.UnprojectPosition(GlobalPosition);
 
-        _stateMachine.ProcessState();
+        _stateMachine.ProcessState(delta);
     }
 
     public void SetPrompt(string interactionPrompt)

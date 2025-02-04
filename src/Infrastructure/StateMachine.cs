@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Godot;
 
 public class StateMachine<State>
 {
+    public delegate void ProcessStateAction(double delta);
     class Transition
     {
         public int _Priority { get; set; }
@@ -19,7 +21,7 @@ public class StateMachine<State>
     }
 
     private State _curState;
-    private IDictionary<State, Action> _stateProcessActions;
+    private IDictionary<State, ProcessStateAction> _stateProcessActions;
     private IDictionary<State, Action> _stateEnterActions;
     private IDictionary<State, Action> _stateExitActions;
     private IDictionary<State, List<Transition>> _stateTransitions;
@@ -28,7 +30,7 @@ public class StateMachine<State>
     public StateMachine(State initialState)
     {
         _curState = initialState;
-        _stateProcessActions = new Dictionary<State, Action>();
+        _stateProcessActions = new Dictionary<State, ProcessStateAction>();
         _stateEnterActions = new Dictionary<State, Action>();
         _stateExitActions = new Dictionary<State, Action>();
         _stateTransitions = new Dictionary<State, List<Transition>>();
@@ -40,9 +42,14 @@ public class StateMachine<State>
         return _curState;
     }
 
-    public void addStateProcessAction(State state, Action action)
+    public void addStateProcessAction(State state, ProcessStateAction action)
     {
         _stateProcessActions[state] = action;
+    }
+
+    public void addStateProcessAction(State state, Action action)
+    {
+        _stateProcessActions[state] = (double delta) => action();
     }
 
     public void addStateEnterAction(State state, Action action)
@@ -100,9 +107,9 @@ public class StateMachine<State>
         }
     }
 
-    public void ProcessState()
+    public void ProcessState(double delta)
     {
-        RunStateProcessAction();
+        RunStateProcessAction(delta);
         RunStateTransitions();
         _eventSet.Clear();
     }
@@ -112,11 +119,11 @@ public class StateMachine<State>
         _eventSet.Add(eventID);
     }
 
-    private void RunStateProcessAction()
+    private void RunStateProcessAction(double delta)
     {
-        if (_stateProcessActions.TryGetValue(_curState, out Action action))
+        if (_stateProcessActions.TryGetValue(_curState, out ProcessStateAction action))
         {
-            action();
+            action(delta);
         }
     }
 
