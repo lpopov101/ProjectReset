@@ -53,47 +53,8 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
         _camera = GetViewport().GetCamera3D();
         FloorSnapLength = _MaxStairHeight + 0.1F;
 
-        _stateMachine.addStateProcessAction(
-            State.Grounded,
-            (double delta) =>
-            {
-                var direction = getMovementDirection();
-                var jumpForce = Locator<InputManager>.Get().GetJumpInput() ? _JumpForce : 0F;
-                var targetVelocity = VelocityBuilder
-                    .FromVelocity(Velocity)
-                    .WithGroundedMovement(
-                        direction,
-                        _GroundedMovementSpeed,
-                        _GroundedFriction,
-                        (float)delta
-                    )
-                    .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
-                    .WithJumping(jumpForce)
-                    .Build();
-                Velocity = targetVelocity;
-                processStairs(targetVelocity);
-                MoveAndSlide();
-                applyTurning();
-            }
-        );
-
-        _stateMachine.addStateProcessAction(
-            State.Airborne,
-            (double delta) =>
-            {
-                var direction = getMovementDirection();
-                var targetVelocity = VelocityBuilder
-                    .FromVelocity(Velocity)
-                    .WithAcceleration(direction, _AirborneAcceleration, (float)delta)
-                    .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
-                    .WithGravity(_Gravity, (float)delta)
-                    .Build();
-                Velocity = targetVelocity;
-                processStairs(targetVelocity);
-                MoveAndSlide();
-                applyTurning();
-            }
-        );
+        _stateMachine.addStateProcessAction(State.Grounded, applyGroundedMovement);
+        _stateMachine.addStateProcessAction(State.Airborne, applyAirborneMovement);
 
         _stateMachine.addStateTransition(State.Grounded, State.Airborne, () => !IsOnFloor());
         _stateMachine.addStateTransition(State.Airborne, State.Grounded, IsOnFloor);
@@ -102,6 +63,44 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     public override void _Process(double delta)
     {
         _stateMachine.ProcessState(delta);
+    }
+
+    private void applyGroundedMovement(double delta)
+    {
+        var direction = getMovementDirection();
+        var jumpForce = Locator<InputManager>.Get().GetJumpInput() ? _JumpForce : 0F;
+        var targetVelocity = VelocityBuilder
+            .FromVelocity(Velocity)
+            .WithGroundedMovement(
+                direction,
+                _GroundedMovementSpeed,
+                _GroundedFriction,
+                (float)delta
+            )
+            .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
+            .WithJumping(jumpForce)
+            .Build();
+        applyTargetVelocity(targetVelocity);
+    }
+
+    private void applyAirborneMovement(double delta)
+    {
+        var direction = getMovementDirection();
+        var targetVelocity = VelocityBuilder
+            .FromVelocity(Velocity)
+            .WithAcceleration(direction, _AirborneAcceleration, (float)delta)
+            .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
+            .WithGravity(_Gravity, (float)delta)
+            .Build();
+        applyTargetVelocity(targetVelocity);
+    }
+
+    private void applyTargetVelocity(Vector3 targetVelocity)
+    {
+        Velocity = targetVelocity;
+        processStairs(targetVelocity);
+        MoveAndSlide();
+        applyTurning();
     }
 
     private Vector3 getMovementDirection()
