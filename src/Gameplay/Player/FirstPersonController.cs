@@ -45,7 +45,6 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     private StateMachine<State> _stateMachine;
     private Camera3D _camera;
     private float _pitch = 0.0f;
-    private float _curDelta = 0.0F;
 
     public override void _Ready()
     {
@@ -56,7 +55,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
 
         _stateMachine.addStateProcessAction(
             State.Grounded,
-            () =>
+            (double delta) =>
             {
                 var direction = getMovementDirection();
                 var jumpForce = Locator<InputManager>.Get().GetJumpInput() ? _JumpForce : 0F;
@@ -66,7 +65,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
                         direction,
                         _GroundedMovementSpeed,
                         _GroundedFriction,
-                        _curDelta
+                        (float)delta
                     )
                     .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
                     .WithJumping(jumpForce)
@@ -80,14 +79,14 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
 
         _stateMachine.addStateProcessAction(
             State.Airborne,
-            () =>
+            (double delta) =>
             {
                 var direction = getMovementDirection();
                 var targetVelocity = VelocityBuilder
                     .FromVelocity(Velocity)
-                    .WithAcceleration(direction, _AirborneAcceleration, _curDelta)
+                    .WithAcceleration(direction, _AirborneAcceleration, (float)delta)
                     .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
-                    .WithGravity(_Gravity, _curDelta)
+                    .WithGravity(_Gravity, (float)delta)
                     .Build();
                 Velocity = targetVelocity;
                 processStairs(targetVelocity);
@@ -102,7 +101,6 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
 
     public override void _Process(double delta)
     {
-        _curDelta = (float)delta;
         _stateMachine.ProcessState(delta);
     }
 
