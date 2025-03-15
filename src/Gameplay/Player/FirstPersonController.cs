@@ -40,7 +40,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     private Node3D _StairProbe;
 
     [Export]
-    private float _StairProbeDistance = 0.5F;
+    private float _StairProbeDistance = 0.75F;
 
     private StateMachine<State> _stateMachine;
     private Camera3D _camera;
@@ -80,7 +80,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
             .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
             .WithJumping(jumpForce)
             .Build();
-        applyTargetVelocity(targetVelocity);
+        applyTargetVelocity(targetVelocity, delta);
     }
 
     private void applyAirborneMovement(double delta)
@@ -92,13 +92,13 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
             .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
             .WithGravity(_Gravity, (float)delta)
             .Build();
-        applyTargetVelocity(targetVelocity);
+        applyTargetVelocity(targetVelocity, delta);
     }
 
-    private void applyTargetVelocity(Vector3 targetVelocity)
+    private void applyTargetVelocity(Vector3 targetVelocity, double delta)
     {
         Velocity = targetVelocity;
-        processStairs(targetVelocity);
+        processStairs(targetVelocity, delta);
         MoveAndSlide();
         applyTurning();
     }
@@ -122,15 +122,15 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
         _camera.Rotation = new Vector3(_pitch, 0, 0);
     }
 
-    private void processStairs(Vector3 targetVelocity)
+    private void processStairs(Vector3 targetVelocity, double delta)
     {
-        var direction = new Vector3(targetVelocity.X, 0, targetVelocity.Y).Normalized();
+        var direction = new Vector3(targetVelocity.X, 0, targetVelocity.Z).Normalized();
         if (IsOnWall() && !direction.IsZeroApprox())
         {
             var stairDistanceOpt = probeStairDistance(direction);
             if (stairDistanceOpt.HasValue)
             {
-                Translate(new Vector3(0, stairDistanceOpt.Value, 0));
+                Translate(new Vector3(0, Mathf.Lerp(0, stairDistanceOpt.Value, (float)delta * 30F), 0));
             }
         }
     }
@@ -139,22 +139,18 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     {
         var origin =
             _StairProbe.GlobalPosition
-            + (_StairProbeDistance * direction)
+            + _StairProbeDistance * direction
             + (_MaxStairHeight * Vector3.Up);
         var hit = new RaycastBuilder(_StairProbe)
             .FromPosition(origin)
             .WithDirectionAndMagnitude(Vector3.Down, _MaxStairHeight)
             .WithIgnoredObject(this)
             .Cast();
-        return hit == null ? null : _MaxStairHeight - origin.DistanceTo(hit.Position);
-    }
-
-    private void QuickMoveAndSlide(Vector3 velocity)
-    {
-        var oldVelocity = Velocity;
-        Velocity = velocity;
-        MoveAndSlide();
-        Velocity = oldVelocity;
+        if (hit != null)
+        {
+            return _MaxStairHeight - origin.DistanceTo(hit.Position);
+        }
+        return null;
     }
 
     public void PickUp(string message)

@@ -250,7 +250,6 @@ _GroundedMovementSpeed = 7.5
 _MaxHorizontalSpeed = 10.0
 _MaxStairHeight = 1.0
 _StairProbe = NodePath("StairProbe")
-_StairProbeDistance = 0.667
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_8fl7j")
