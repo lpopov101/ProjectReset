@@ -16,13 +16,13 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     private float _MouseSensitivity = 0.2f;
 
     [Export]
-    private float _GroundedMovementSpeed = 5.0f;
+    private float _GroundedMovementSpeed = 7.5f;
 
     [Export]
     private float _GroundedFriction = 15.0F;
 
     [Export]
-    private float _MaxHorizontalSpeed = 6.0f;
+    private float _MaxXZSpeed = 10.0f;
 
     [Export]
     private float _AirborneAcceleration = 100.0F;
@@ -34,7 +34,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     private float _JumpForce = 4.5f;
 
     [Export]
-    private float _MaxStairHeight = 0.1f;
+    private float _MaxStairHeight = 1f;
 
     [Export]
     private Node3D _StairProbe;
@@ -77,7 +77,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
                 _GroundedFriction,
                 (float)delta
             )
-            .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
+            .WithClampedXZSpeed(_MaxXZSpeed)
             .WithJumping(jumpForce)
             .Build();
         applyTargetVelocity(targetVelocity, delta);
@@ -89,7 +89,7 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
         var targetVelocity = VelocityBuilder
             .FromVelocity(Velocity)
             .WithAcceleration(direction, _AirborneAcceleration, (float)delta)
-            .WithClampedHorizontalSpeed(_MaxHorizontalSpeed)
+            .WithClampedXZSpeed(_MaxXZSpeed)
             .WithGravity(_Gravity, (float)delta)
             .Build();
         applyTargetVelocity(targetVelocity, delta);

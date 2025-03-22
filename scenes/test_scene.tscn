@@ -246,9 +246,6 @@ collision_layer = 3
 collision_mask = 3
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
-_GroundedMovementSpeed = 7.5
-_MaxHorizontalSpeed = 10.0
-_MaxStairHeight = 1.0
 _StairProbe = NodePath("StairProbe")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]

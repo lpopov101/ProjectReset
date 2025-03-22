@@ -21,6 +21,8 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
     {
         _Health = _MaxHealth;
         _navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
+        MotionMode = MotionModeEnum.Floating;
+        WallMinSlideAngle = 0;
     }
 
     protected Vector3 getTargetVelocity()
@@ -31,6 +33,11 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
         }
         var nextPosition = _navAgent.GetNextPathPosition();
         return GlobalPosition.DirectionTo(nextPosition) * _Speed;
+    }
+
+    protected Vector3 getNextPathPosDelta()
+    {
+        return _navAgent.GetNextPathPosition() - GlobalPosition;
     }
 
     protected void setTargetPosition(Vector3 targetPosition)

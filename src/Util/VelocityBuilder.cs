@@ -26,7 +26,7 @@ class VelocityBuilder
     {
         var curSpeedVector = new Vector2(_velocity.X, _velocity.Z);
         var targetSpeedVector = new Vector2(direction.X, direction.Z).Normalized() * speed;
-        var speedVector = applyHorizontalVelocityWithFriction(
+        var speedVector = applyXZVelocityWithFriction(
             curSpeedVector,
             targetSpeedVector,
             friction,
@@ -50,7 +50,7 @@ class VelocityBuilder
         return FromVelocity(new Vector3(_velocity.X, jumpForce, _velocity.Z));
     }
 
-    public VelocityBuilder WithClampedHorizontalSpeed(float maxHorizontalSpeed)
+    public VelocityBuilder WithClampedXZSpeed(float maxHorizontalSpeed)
     {
         var horizontalVelocity = new Vector2(_velocity.X, _velocity.Z);
         if (horizontalVelocity.Length() <= maxHorizontalSpeed)
@@ -66,7 +66,7 @@ class VelocityBuilder
         return _velocity;
     }
 
-    private Vector2 applyHorizontalVelocityWithFriction(
+    private Vector2 applyXZVelocityWithFriction(
         Vector2 curVelocity,
         Vector2 appliedVelocity,
         float friction,

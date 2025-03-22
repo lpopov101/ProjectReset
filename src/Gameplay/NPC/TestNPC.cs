@@ -61,6 +61,7 @@ public partial class TestNPC : NPC
     {
         setTargetPosition(getPlayerPosition());
         Velocity = getTargetVelocity();
+        Locator<MessageManager>.Get().AddMessage($"Delta: {getNextPathPosDelta()}");
         if (Velocity.Y > 0.01 && IsOnWall())
         {
             Velocity = new Vector3(Velocity.X, Velocity.Y + _LedgeBoost, Velocity.Z);
