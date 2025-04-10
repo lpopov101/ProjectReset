@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TestEquippableInventoryItem" load_steps=3 format=3 uid="uid://d2d783dgk1rdn"]
 
-[ext_resource type="Script" path="res://src/Gameplay/Inventory/TestEquippableInventoryItem.cs" id="1_tywuc"]
+[ext_resource type="Script" uid="uid://dn2yjelhjj7as" path="res://src/Gameplay/Inventory/TestEquippableInventoryItem.cs" id="1_tywuc"]
 [ext_resource type="PackedScene" uid="uid://wrocxg2afii2" path="res://resources/inventory items/test_inventory_item_model2.tscn" id="1_whnaf"]
 
 [resource]

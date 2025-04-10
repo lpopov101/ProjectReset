@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c2jcldcopp7hu"]
 
-[ext_resource type="Script" path="res://src/Autoload/MessageManager.cs" id="1_dp3b6"]
+[ext_resource type="Script" uid="uid://b04xp222r215g" path="res://src/Autoload/MessageManager.cs" id="1_dp3b6"]
 
 [node name="MessageManager" type="Node"]
 script = ExtResource("1_dp3b6")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bhffos1unbpws"]
 
 [ext_resource type="Texture2D" uid="uid://b4j3jt7l6jlrs" path="res://textures/ui/circle.png" id="1_8v4f3"]
-[ext_resource type="Script" path="res://src/UI/Inventory/InventoryEntry.cs" id="1_fdjfv"]
+[ext_resource type="Script" uid="uid://cwhhh4x0by5de" path="res://src/UI/Inventory/InventoryEntry.cs" id="1_fdjfv"]
 [ext_resource type="Texture2D" uid="uid://byllonx1oqkbg" path="res://textures/ui/equip.png" id="2_43seh"]
 
 [node name="InventoryEntry" type="PanelContainer" node_paths=PackedStringArray("_SelectedIndicator", "_EquippedIndicator", "_NameLabel", "_WeightLabel", "_SelectButton")]
