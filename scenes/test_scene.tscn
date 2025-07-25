@@ -1,7 +1,8 @@
-[gd_scene load_steps=67 format=4 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=69 format=4 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" uid="uid://wi6y2ckr77m1" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
+[ext_resource type="Script" uid="uid://if7gw4i6jpbm" path="res://src/Gameplay/Characters/WalkingCharacterSettings.cs" id="2_hf2sn"]
 [ext_resource type="Texture2D" uid="uid://b3hmnlwt8y47e" path="res://textures/stock/tile.jpg" id="3_76ytw"]
 [ext_resource type="Texture2D" uid="uid://bgcj24tnqorl7" path="res://textures/stock/brick.jpg" id="4_8agyc"]
 [ext_resource type="Texture2D" uid="uid://ftdrd0rtgg3h" path="res://textures/stock/grass.jpg" id="5_o0bi4"]
@@ -16,6 +17,18 @@
 [ext_resource type="Script" uid="uid://svnqyi60d1e0" path="res://src/Gameplay/NPC/TestNPC.cs" id="15_o625m"]
 [ext_resource type="Script" uid="uid://bjg3nqfc71fhx" path="res://src/Gameplay/Inventory/ItemPickup.cs" id="16_vrei2"]
 [ext_resource type="Resource" uid="uid://d2d783dgk1rdn" path="res://resources/inventory items/test_equippable_inventory_item.tres" id="17_7cqhl"]
+
+[sub_resource type="Resource" id="Resource_qq5q4"]
+script = ExtResource("2_hf2sn")
+_GroundedMovementSpeed = 7.5
+_GroundedFriction = 15.0
+_MaxXZSpeed = 10.0
+_AirborneAcceleration = 100.0
+_Gravity = -9.8
+_JumpForce = 4.5
+_MaxStairHeight = 1.0
+_StairProbeDistance = 0.75
+metadata/_custom_type_script = "uid://if7gw4i6jpbm"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8fl7j"]
 
@@ -246,7 +259,9 @@ collision_layer = 3
 collision_mask = 3
 floor_block_on_wall = false
 script = ExtResource("6_qh314")
+_MouseSensitivity = 8.0
 _StairProbe = NodePath("StairProbe")
+_WalkingCharacterSettings = SubResource("Resource_qq5q4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_8fl7j")

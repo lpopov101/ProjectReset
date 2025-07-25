@@ -11,14 +11,17 @@ public partial class TestNPC : NPC
 
     [Export]
     private float _SmoothingCoeff = 2.0F;
+
     [Export]
     private float _LedgeBoost = 1.0F;
+
     [Export]
     private float _MaxDistanceFromPlayer = 5.0F;
 
     private Vector3 _lastTargetVelocity = Vector3.Zero;
     private StateMachine<State> _stateMachine = new StateMachine<State>(State.Idle);
     private AnimationPlayer _animationPlayer;
+
     // private MeshInstance3D _mesh;
     // private StandardMaterial3D _material;
 
@@ -31,24 +34,38 @@ public partial class TestNPC : NPC
         _animationPlayer = GetNode<AnimationPlayer>("Model/AnimationPlayer");
         var walkAnimation = _animationPlayer.GetAnimation("Walk");
         walkAnimation.LoopMode = Animation.LoopModeEnum.Linear;
-        _stateMachine.addStateEnterAction(State.Idle, () =>
-        {
-            Velocity = Vector3.Zero;
-            _animationPlayer.Pause();
-        });
-        _stateMachine.addStateEnterAction(State.Moving, () =>
-        {
-            _animationPlayer.Play("Walk", customBlend: 0.2F);
-        });
+        _stateMachine.addStateEnterAction(
+            State.Idle,
+            () =>
+            {
+                Velocity = Vector3.Zero;
+                _animationPlayer.Pause();
+            }
+        );
+        _stateMachine.addStateEnterAction(
+            State.Moving,
+            () =>
+            {
+                _animationPlayer.Play("Walk", customBlend: 0.2F);
+            }
+        );
         _stateMachine.addStateProcessAction(State.Moving, moveTowardsPlayer);
-        _stateMachine.addStateTransition(State.Idle, State.Moving, () =>
-        {
-            return GlobalPosition.DistanceTo(getPlayerPosition()) > _MaxDistanceFromPlayer;
-        });
-        _stateMachine.addStateTransition(State.Moving, State.Idle, () =>
-        {
-            return GlobalPosition.DistanceTo(getPlayerPosition()) <= _MaxDistanceFromPlayer;
-        });
+        _stateMachine.addStateTransition(
+            State.Idle,
+            State.Moving,
+            () =>
+            {
+                return GlobalPosition.DistanceTo(getPlayerPosition()) > _MaxDistanceFromPlayer;
+            }
+        );
+        _stateMachine.addStateTransition(
+            State.Moving,
+            State.Idle,
+            () =>
+            {
+                return GlobalPosition.DistanceTo(getPlayerPosition()) <= _MaxDistanceFromPlayer;
+            }
+        );
     }
 
     public override void _Process(double delta)
@@ -61,7 +78,6 @@ public partial class TestNPC : NPC
     {
         setTargetPosition(getPlayerPosition());
         Velocity = getTargetVelocity();
-        Locator<MessageManager>.Get().AddMessage($"Delta: {getNextPathPosDelta()}");
         if (Velocity.Y > 0.01 && IsOnWall())
         {
             Velocity = new Vector3(Velocity.X, Velocity.Y + _LedgeBoost, Velocity.Z);
@@ -79,11 +95,7 @@ public partial class TestNPC : NPC
 
     private Vector3 getPlayerPosition()
     {
-        return Locator<PlayerManager>
-            .Get()
-            .Player1()
-            .GetCharacterBody()
-            .GlobalPosition;
+        return Locator<PlayerManager>.Get().Player1().GetCharacterBody().GlobalPosition;
     }
 
     public override void Damage(
