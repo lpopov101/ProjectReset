@@ -7,9 +7,6 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
     [Export]
     public float _MaxHealth = 100F;
 
-    [Export]
-    public float _Speed = 10F;
-
     public bool _IsSpawned { get; private set; } = false;
 
     private NavigationAgent3D _navAgent;
@@ -21,23 +18,17 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
     {
         _Health = _MaxHealth;
         _navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
-        MotionMode = MotionModeEnum.Floating;
         WallMinSlideAngle = 0;
     }
 
-    protected Vector3 getTargetVelocity()
+    protected Vector3 getMovementDirection()
     {
         if (_navAgent.IsNavigationFinished())
         {
             return Vector3.Zero;
         }
         var nextPosition = _navAgent.GetNextPathPosition();
-        return GlobalPosition.DirectionTo(nextPosition) * _Speed;
-    }
-
-    protected Vector3 getNextPathPosDelta()
-    {
-        return _navAgent.GetNextPathPosition() - GlobalPosition;
+        return GlobalPosition.DirectionTo(nextPosition);
     }
 
     protected void setTargetPosition(Vector3 targetPosition)

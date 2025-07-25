@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=4 uid="uid://dpmlwaepi1aia"]
+[gd_scene load_steps=70 format=4 uid="uid://dpmlwaepi1aia"]
 
 [ext_resource type="Script" uid="uid://wi6y2ckr77m1" path="res://addons/qodot/src/nodes/qodot_map.gd" id="1_auusx"]
 [ext_resource type="Resource" uid="uid://c36hv0o6g0udo" path="res://addons/qodot/game_definitions/fgd/qodot_fgd.tres" id="2_68awy"]
@@ -246,6 +246,18 @@ points = PackedVector3Array(11.5, -0.5, -10, 11.5, -0.75, -10, 12.5, -0.75, -10,
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_u4445"]
 points = PackedVector3Array(-2.5, 6.25, -9.375, -2.5, 6, -9.375, 11.5, -1, -9.375, 11.5, -0.75, -9.375, -2.5, 6.25, -9.125, -2.5, 6, -9.125, 11.5, -1, -9.125, 11.5, -0.75, -9.125)
+
+[sub_resource type="Resource" id="Resource_hf2sn"]
+script = ExtResource("2_hf2sn")
+_GroundedMovementSpeed = 3.0
+_GroundedFriction = 15.0
+_MaxXZSpeed = 10.0
+_AirborneAcceleration = 100.0
+_Gravity = -9.8
+_JumpForce = 4.5
+_MaxStairHeight = 1.0
+_StairProbeDistance = 0.75
+metadata/_custom_type_script = "uid://if7gw4i6jpbm"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vjfqe"]
 height = 3.0
@@ -574,7 +586,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8806, 0.589846, -0.557495)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("15_o625m")
-_Speed = 3.0
+_walkingCharacterSettings = SubResource("Resource_hf2sn")
 
 [node name="Model" parent="CharacterBody3D" instance=ExtResource("15_a2e6g")]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0.5, 0)
@@ -584,6 +596,9 @@ path_height_offset = -0.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_vjfqe")
+
+[node name="StairProbe" type="Node3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.47622, -0.0108179)
 
 [connection signal="OnInteract" from="Elevator/InteractionPoint" to="Elevator" method="Toggle"]
 [connection signal="OnInteract" from="Elevator2/InteractionPoint" to="Elevator2" method="Toggle"]

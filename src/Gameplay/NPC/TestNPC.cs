@@ -10,17 +10,15 @@ public partial class TestNPC : NPC
     }
 
     [Export]
-    private float _SmoothingCoeff = 2.0F;
-
-    [Export]
-    private float _LedgeBoost = 1.0F;
-
-    [Export]
     private float _MaxDistanceFromPlayer = 5.0F;
+
+    [Export]
+    private WalkingCharacterSettings _walkingCharacterSettings;
 
     private Vector3 _lastTargetVelocity = Vector3.Zero;
     private StateMachine<State> _stateMachine = new StateMachine<State>(State.Idle);
     private AnimationPlayer _animationPlayer;
+    private WalkingCharacterHandler _walkingCharacterHandler;
 
     // private MeshInstance3D _mesh;
     // private StandardMaterial3D _material;
@@ -38,7 +36,8 @@ public partial class TestNPC : NPC
             State.Idle,
             () =>
             {
-                Velocity = Vector3.Zero;
+                _walkingCharacterHandler.SetMovementInput(Vector2.Zero);
+                _walkingCharacterHandler.SetRotationInput(0F);
                 _animationPlayer.Pause();
             }
         );
@@ -66,6 +65,13 @@ public partial class TestNPC : NPC
                 return GlobalPosition.DistanceTo(getPlayerPosition()) <= _MaxDistanceFromPlayer;
             }
         );
+        _walkingCharacterHandler = new WalkingCharacterHandler();
+        _walkingCharacterHandler.Init(
+            this,
+            _walkingCharacterSettings,
+            GetNode<Node3D>("StairProbe")
+        );
+        AddChild(_walkingCharacterHandler);
     }
 
     public override void _Process(double delta)
@@ -77,20 +83,20 @@ public partial class TestNPC : NPC
     private void moveTowardsPlayer(double delta)
     {
         setTargetPosition(getPlayerPosition());
-        Velocity = getTargetVelocity();
-        if (Velocity.Y > 0.01 && IsOnWall())
-        {
-            Velocity = new Vector3(Velocity.X, Velocity.Y + _LedgeBoost, Velocity.Z);
-        }
-        Velocity = _lastTargetVelocity.Lerp(Velocity, _SmoothingCoeff * (float)delta);
-        _lastTargetVelocity = Velocity;
-        MoveAndSlide();
-        var lookTarget = new Vector3(
-            GlobalPosition.X + _lastTargetVelocity.X,
-            GlobalPosition.Y,
-            GlobalPosition.Z + _lastTargetVelocity.Z
-        );
-        Transform = Transform.LookingAt(lookTarget, Vector3.Up);
+        var movementDirection = getMovementDirection();
+        var movementDirectionXZ = new Vector3(
+            movementDirection.X,
+            0,
+            movementDirection.Z
+        ).Normalized();
+
+        var forward = GlobalTransform.Basis.Z.Normalized();
+        var angleToDirection = -forward.SignedAngleTo(movementDirectionXZ, Vector3.Up);
+        Locator<MessageManager>
+            .Get()
+            .AddMessage($"Angle to direction: {Mathf.RadToDeg(angleToDirection)}");
+        _walkingCharacterHandler.SetRotationInput(Mathf.Sign(angleToDirection) * 100F);
+        _walkingCharacterHandler.SetMovementInput(new Vector2(0, -1));
     }
 
     private Vector3 getPlayerPosition()
