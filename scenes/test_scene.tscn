@@ -28,6 +28,8 @@ _Gravity = -9.8
 _JumpForce = 4.5
 _MaxStairHeight = 1.0
 _StairProbeDistance = 0.75
+_StepClimbSpeed = 12.0
+_StepClearance = 0.02
 metadata/_custom_type_script = "uid://if7gw4i6jpbm"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8fl7j"]
@@ -257,6 +259,8 @@ _Gravity = -9.8
 _JumpForce = 4.5
 _MaxStairHeight = 1.0
 _StairProbeDistance = 0.75
+_StepClimbSpeed = 12.0
+_StepClearance = 0.02
 metadata/_custom_type_script = "uid://if7gw4i6jpbm"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vjfqe"]

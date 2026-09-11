@@ -15,6 +15,7 @@ public class RaycastBuilder
     private Vector3 _from = Vector3.Zero;
     private Vector3 _to = Vector3.Zero;
     private Array<CollisionObject3D> _ignoreObjects;
+    private bool _hitBackFaces = true;
 
     public RaycastBuilder(Node3D baseNode)
     {
@@ -66,10 +67,17 @@ public class RaycastBuilder
         return this;
     }
 
+    public RaycastBuilder WithHitBackFaces(bool hitBackFaces)
+    {
+        _hitBackFaces = hitBackFaces;
+        return this;
+    }
+
     public RaycastHit Cast()
     {
         var worldSpace = _baseNode.GetWorld3D().DirectSpaceState;
         var rayQuery = PhysicsRayQueryParameters3D.Create(_from, _to);
+        rayQuery.HitBackFaces = _hitBackFaces;
         rayQuery.Exclude = new Array<Rid>(
             from collisionObject in _ignoreObjects
             select collisionObject.GetRid()

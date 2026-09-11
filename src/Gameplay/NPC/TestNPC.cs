@@ -84,19 +84,20 @@ public partial class TestNPC : NPC
     {
         setTargetPosition(getPlayerPosition());
         var movementDirection = getMovementDirection();
-        var movementDirectionXZ = new Vector3(
-            movementDirection.X,
-            0,
-            movementDirection.Z
-        ).Normalized();
-
-        var forward = GlobalTransform.Basis.Z.Normalized();
-        var angleToDirection = -forward.SignedAngleTo(movementDirectionXZ, Vector3.Up);
-        Locator<MessageManager>
-            .Get()
-            .AddMessage($"Angle to direction: {Mathf.RadToDeg(angleToDirection)}");
-        _walkingCharacterHandler.SetRotationInput(Mathf.Sign(angleToDirection) * 100F);
-        _walkingCharacterHandler.SetMovementInput(new Vector2(0, -1));
+        var localMovementDirection = ToLocal(GlobalPosition + movementDirection);
+        var rotationDirectionMultiplier = -Mathf.Sign(localMovementDirection.X);
+        var angleToTarget = Mathf.RadToDeg(
+            Vector3.Forward.AngleTo(
+                new Vector3(localMovementDirection.X, 0, localMovementDirection.Z)
+            )
+        );
+        var dampingFactor = Mathf.Sqrt(
+            Mathf.Clamp(Mathf.InverseLerp(0F, 180F, Mathf.Abs(angleToTarget)), 0F, 1F)
+        );
+        var rotationInput = 500 * rotationDirectionMultiplier * dampingFactor;
+        var movementSpeed = 1 - dampingFactor;
+        _walkingCharacterHandler.SetRotationInput(rotationInput);
+        _walkingCharacterHandler.SetMovementInput(Vector2.Up * movementSpeed);
     }
 
     private Vector3 getPlayerPosition()

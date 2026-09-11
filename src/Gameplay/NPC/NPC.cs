@@ -31,6 +31,16 @@ public abstract partial class NPC : CharacterBody3D, IDamageable, ISpawnable
         return GlobalPosition.DirectionTo(nextPosition);
     }
 
+    protected float getDistanceToNextPosition()
+    {
+        if (_navAgent.IsNavigationFinished())
+        {
+            return 0;
+        }
+        var nextPosition = _navAgent.GetNextPathPosition();
+        return GlobalPosition.DistanceTo(nextPosition);
+    }
+
     protected void setTargetPosition(Vector3 targetPosition)
     {
         _navAgent.TargetPosition = targetPosition;

@@ -27,4 +27,10 @@ public partial class WalkingCharacterSettings : Resource
 
     [Export]
     public float _StairProbeDistance { get; private set; } = 0.75F;
+
+    [Export]
+    public float _StepClimbSpeed { get; private set; } = 12.0F;
+
+    [Export]
+    public float _StepClearance { get; private set; } = 0.02F;
 }

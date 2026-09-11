@@ -50,6 +50,11 @@ class VelocityBuilder
         return FromVelocity(new Vector3(_velocity.X, jumpForce, _velocity.Z));
     }
 
+    public VelocityBuilder WithAddedVerticalVelocity(float ySpeed)
+    {
+        return FromVelocity(new Vector3(_velocity.X, _velocity.Y + ySpeed, _velocity.Z));
+    }
+
     public VelocityBuilder WithClampedXZSpeed(float maxHorizontalSpeed)
     {
         var horizontalVelocity = new Vector2(_velocity.X, _velocity.Z);

@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
-using System.Text;
 using Godot;
 
 [GlobalClass]
@@ -26,6 +24,7 @@ public partial class WalkingCharacterHandler : Node
     private Vector2 _movementInput = Vector2.Zero;
     private float _rotationInput = 0F;
     private bool _JumpInput = false;
+    private bool _stuckToGround = false;
 
     public override void _Ready()
     {
@@ -37,7 +36,10 @@ public partial class WalkingCharacterHandler : Node
         _stateMachine.addStateTransition(
             State.Grounded,
             State.Airborne,
-            () => !_CharacterBody.IsOnFloor()
+            () =>
+            {
+                return !_CharacterBody.IsOnFloor() && !_stuckToGround;
+            }
         );
         _stateMachine.addStateTransition(State.Airborne, State.Grounded, _CharacterBody.IsOnFloor);
     }
@@ -81,8 +83,7 @@ public partial class WalkingCharacterHandler : Node
     private void applyGroundedMovement(double delta)
     {
         var direction = getMovementDirection();
-        var jumpForce = _JumpInput ? _WalkingCharacterSettings._JumpForce : 0F;
-        var targetVelocity = VelocityBuilder
+        var builder = VelocityBuilder
             .FromVelocity(_CharacterBody.Velocity)
             .WithGroundedMovement(
                 direction,
@@ -90,16 +91,20 @@ public partial class WalkingCharacterHandler : Node
                 _WalkingCharacterSettings._GroundedFriction,
                 (float)delta
             )
-            .WithClampedXZSpeed(_WalkingCharacterSettings._MaxXZSpeed)
-            .WithJumping(jumpForce)
-            .Build();
-        applyTargetVelocity(targetVelocity, delta);
+            .WithClampedXZSpeed(_WalkingCharacterSettings._MaxXZSpeed);
+        if (_JumpInput)
+        {
+            builder = builder.WithJumping(_WalkingCharacterSettings._JumpForce);
+        }
+        applyStepClimb(direction, delta);
+        applyTargetVelocity(builder.Build(), delta);
+        applyGroundStick();
     }
 
     private void applyAirborneMovement(double delta)
     {
         var direction = getMovementDirection();
-        var targetVelocity = VelocityBuilder
+        var builder = VelocityBuilder
             .FromVelocity(_CharacterBody.Velocity)
             .WithAcceleration(
                 direction,
@@ -107,15 +112,14 @@ public partial class WalkingCharacterHandler : Node
                 (float)delta
             )
             .WithClampedXZSpeed(_WalkingCharacterSettings._MaxXZSpeed)
-            .WithGravity(_WalkingCharacterSettings._Gravity, (float)delta)
-            .Build();
-        applyTargetVelocity(targetVelocity, delta);
+            .WithGravity(_WalkingCharacterSettings._Gravity, (float)delta);
+        applyStepClimb(direction, delta);
+        applyTargetVelocity(builder.Build(), delta);
     }
 
     private void applyTargetVelocity(Vector3 targetVelocity, double delta)
     {
         _CharacterBody.Velocity = targetVelocity;
-        processStairs(targetVelocity, delta);
         _CharacterBody.MoveAndSlide();
         applyTurning(delta);
     }
@@ -131,22 +135,68 @@ public partial class WalkingCharacterHandler : Node
         _CharacterBody.RotateY(Mathf.DegToRad(_rotationInput * (float)delta));
     }
 
-    private void processStairs(Vector3 targetVelocity, double delta)
+    private Vector3 getFootPosition()
     {
-        var direction = new Vector3(targetVelocity.X, 0, targetVelocity.Z).Normalized();
-        if (_CharacterBody.IsOnWall() && !direction.IsZeroApprox())
-        {
-            var stairDistanceOpt = probeStairDistance(direction);
-            if (stairDistanceOpt.HasValue)
-            {
-                _CharacterBody.Translate(
-                    new Vector3(0, Mathf.Lerp(0, stairDistanceOpt.Value, (float)delta * 30F), 0)
-                );
-            }
-        }
+        return _StairProbe != null ? _StairProbe.GlobalPosition : _CharacterBody.GlobalPosition;
     }
 
-    private Nullable<float> probeStairDistance(Vector3 direction)
+    private float getDistanceToGround(float maxDistance)
+    {
+        var fromPosition = getFootPosition();
+        var hit = new RaycastBuilder(_CharacterBody)
+            .FromPosition(fromPosition)
+            .WithDirectionAndMagnitude(Vector3.Down, maxDistance)
+            .WithIgnoredObject(_CharacterBody)
+            .WithHitBackFaces(false)
+            .Cast();
+        if (hit != null && isWalkableSurface(hit))
+        {
+            return fromPosition.DistanceTo(hit.Position);
+        }
+        return float.MaxValue;
+    }
+
+    private void applyGroundStick()
+    {
+        _stuckToGround = false;
+        if (_CharacterBody.IsOnFloor() || _CharacterBody.Velocity.Y > 0F)
+        {
+            return;
+        }
+        var maxDrop = _WalkingCharacterSettings._MaxStairHeight;
+        var distance = getDistanceToGround(maxDrop + _WalkingCharacterSettings._StepClearance);
+        if (distance > maxDrop)
+        {
+            return;
+        }
+        _CharacterBody.MoveAndCollide(Vector3.Down * distance);
+        _stuckToGround = true;
+    }
+
+    private void applyStepClimb(Vector3 direction, double delta)
+    {
+        if (!_CharacterBody.IsOnWall() || direction.IsZeroApprox())
+        {
+            return;
+        }
+        var stepHeightOpt = probeStepHeight(direction);
+        if (!stepHeightOpt.HasValue)
+        {
+            return;
+        }
+        var remaining = stepHeightOpt.Value + _WalkingCharacterSettings._StepClearance;
+        var rise = Mathf.Min(
+            remaining,
+            _WalkingCharacterSettings._StepClimbSpeed * (float)delta
+        );
+        if (rise <= 0F)
+        {
+            return;
+        }
+        _CharacterBody.MoveAndCollide(Vector3.Up * rise);
+    }
+
+    private Nullable<float> probeStepHeight(Vector3 direction)
     {
         if (_StairProbe == null)
         {
@@ -160,11 +210,18 @@ public partial class WalkingCharacterHandler : Node
             .FromPosition(origin)
             .WithDirectionAndMagnitude(Vector3.Down, _WalkingCharacterSettings._MaxStairHeight)
             .WithIgnoredObject(_CharacterBody)
+            .WithHitBackFaces(false)
             .Cast();
-        if (hit != null)
+        if (hit == null || !isWalkableSurface(hit))
         {
-            return _WalkingCharacterSettings._MaxStairHeight - origin.DistanceTo(hit.Position);
+            return null;
         }
-        return null;
+        return _WalkingCharacterSettings._MaxStairHeight - origin.DistanceTo(hit.Position);
+    }
+
+    private bool isWalkableSurface(RaycastHit hit)
+    {
+        return hit.Normal.Dot(_CharacterBody.UpDirection)
+            >= Mathf.Cos(_CharacterBody.FloorMaxAngle);
     }
 }
