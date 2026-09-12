@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/DespawnTestProjectile.cs" id="1_dtp"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_dtp"]
+radius = 0.5
+
+[node name="DespawnTestProjectile" type="RigidBody3D"]
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 8
+script = ExtResource("1_dtp")
+_MaxLifespanSecs = 100.0
+_LaunchImpulse = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_dtp")

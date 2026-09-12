@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Godot;
 
 public partial class Pool : Node
@@ -18,6 +19,19 @@ public partial class Pool : Node
     private Queue _poolQueue;
     private Queue _despawnQueue;
     private Node _sceneRoot;
+
+    // Instances currently parked in _poolQueue, and instances whose despawn is
+    // queued but not applied yet. One object can ask to despawn more than once
+    // in a single frame - two BodyEntered signals out of one physics step, or a
+    // collision racing the lifespan timer - and without these guards the second
+    // request parks it a second time, after which the pool hands the same
+    // instance to two callers at once.
+    private readonly HashSet<ISpawnable> _pooled = new HashSet<ISpawnable>(
+        ReferenceEqualityComparer.Instance
+    );
+    private readonly HashSet<ISpawnable> _pendingDespawn = new HashSet<ISpawnable>(
+        ReferenceEqualityComparer.Instance
+    );
 
     public static Pool Create(PackedScene templateScene, int initPoolSize = 128)
     {
@@ -160,11 +174,17 @@ public partial class Pool : Node
     public void Despawn<T>(T despawnObj)
         where T : ISpawnable
     {
+        _pendingDespawn.Remove(despawnObj);
+        if (!_pooled.Add(despawnObj))
+        {
+            // Already parked, so this is a repeat request for the same life.
+            return;
+        }
         despawnObj.OnDespawn();
         _poolQueue.Enqueue(despawnObj);
         if (despawnObj is Node node)
         {
-            node.GetParent().RemoveChild(node);
+            node.GetParent()?.RemoveChild(node);
             node.SetProcess(false);
         }
         if (despawnObj is Node3D node3D)
@@ -180,6 +200,10 @@ public partial class Pool : Node
     public void QueueDespawn<T>(T despawnObj)
         where T : ISpawnable
     {
+        if (_pooled.Contains(despawnObj) || !_pendingDespawn.Add(despawnObj))
+        {
+            return;
+        }
         Action despawnAction = () =>
         {
             Despawn(despawnObj);
@@ -219,7 +243,12 @@ public partial class Pool : Node
         {
             extendPool();
         }
-        if (_poolQueue.Dequeue() is T result)
+        var instance = _poolQueue.Dequeue();
+        if (instance is ISpawnable spawnable)
+        {
+            _pooled.Remove(spawnable);
+        }
+        if (instance is T result)
         {
             return result;
         }
@@ -234,6 +263,7 @@ public partial class Pool : Node
             if (poolItem is ISpawnable spawnable)
             {
                 spawnable.OriginPool = this;
+                _pooled.Add(spawnable);
             }
             if (poolItem is Node3D node3D)
             {

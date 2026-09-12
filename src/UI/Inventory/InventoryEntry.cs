@@ -30,6 +30,7 @@ public partial class InventoryEntry : Control, ISpawnable
     {
         _selected = false;
         setSelectedIndicatorAlpha(0F);
+        _EquippedIndicator.Visible = false;
         Selected = null;
     }
 

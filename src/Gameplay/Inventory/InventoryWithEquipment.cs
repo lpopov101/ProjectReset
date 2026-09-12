@@ -18,9 +18,11 @@ public class InventoryWithEquipment : Inventory
 
     public override void RemoveItem(InventoryItem item, int quantity = 1)
     {
+        var itemWithQuantity = GetItemWithQuantity(item);
         if (
             item is EquippableInventoryItem equippableItem
-            && GetItemWithQuantity(item).Quantity - quantity <= 0
+            && itemWithQuantity != null
+            && itemWithQuantity.Quantity - quantity <= 0
         )
         {
             _equipment.UnequipItem(equippableItem);

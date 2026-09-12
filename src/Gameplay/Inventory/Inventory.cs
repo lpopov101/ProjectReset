@@ -58,8 +58,11 @@ public class Inventory
         if (_itemDict.ContainsKey(item.GetName()))
         {
             var itemWithQuantity = _itemDict[item.GetName()];
-            itemWithQuantity.Quantity -= quantity;
-            _remainingCapcaity += itemWithQuantity.Item.GetWeight() * quantity;
+            // Clamp so removing more than is held cannot credit back capacity
+            // that was never spent, which would silently grow the inventory.
+            var removedQuantity = Math.Clamp(quantity, 0, itemWithQuantity.Quantity);
+            itemWithQuantity.Quantity -= removedQuantity;
+            _remainingCapcaity += itemWithQuantity.Item.GetWeight() * removedQuantity;
             if (itemWithQuantity.Quantity <= 0)
             {
                 _itemDict.Remove(item.GetName());
@@ -70,7 +73,7 @@ public class Inventory
 
     protected void InvokeItemChanged(InventoryItem item)
     {
-        InventoryItemChanged.Invoke(item);
+        InventoryItemChanged?.Invoke(item);
     }
 
     public InventoryItemWithQuantity GetItemWithQuantity(string name)

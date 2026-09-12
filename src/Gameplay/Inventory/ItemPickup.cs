@@ -14,7 +14,7 @@ public partial class ItemPickup : Node3D
     public override void _Ready()
     {
         base._Ready();
-        _interactionPoint = GetNode<InteractionPoint>($"{GetPath()}/InteractionPoint");
+        _interactionPoint = GetNodeOrNull<InteractionPoint>("InteractionPoint");
         if (_interactionPoint == null)
         {
             _interactionPoint = new InteractionPoint();

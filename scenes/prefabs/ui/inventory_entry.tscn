@@ -35,14 +35,18 @@ text = "Weight: 1"
 fit_content = true
 
 [node name="EquippedIndicator" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("2_43seh")
-expand_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SelectedIndicator" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("1_8v4f3")
-expand_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SelectButton" type="TextureButton" parent="."]
 layout_mode = 2

@@ -19,7 +19,7 @@ public partial class TestItemPickup : Area3D
     public override void _Ready()
     {
         var groundY = findGroundY();
-        if (groundY != float.NaN)
+        if (!float.IsNaN(groundY))
         {
             Position = new Vector3(
                 Transform.Origin.X,

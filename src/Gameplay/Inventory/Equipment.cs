@@ -32,7 +32,7 @@ public class Equipment
             _equipmentDict[bestEquipSlot] = item;
             _lastEquippedTimeDict[bestEquipSlot] = Time.GetTicksMsec();
             item.SetEquipped(true);
-            EquipmentChanged.Invoke(item, bestEquipSlot);
+            EquipmentChanged?.Invoke(item, bestEquipSlot);
             return true;
         }
         return false;
@@ -45,7 +45,7 @@ public class Equipment
             var equippedItem = _equipmentDict[equipSlot];
             _equipmentDict.Remove(equipSlot);
             equippedItem.SetEquipped(false);
-            EquipmentChanged.Invoke(equippedItem, equipSlot);
+            EquipmentChanged?.Invoke(equippedItem, equipSlot);
             return true;
         }
         return false;
