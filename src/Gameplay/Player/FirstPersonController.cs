@@ -4,7 +4,7 @@ using System.Text;
 using Godot;
 
 [GlobalClass]
-public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlayer
+public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlayer, IDoorCloser
 {
     [Export]
     private float _MouseSensitivity = 0.2f;
@@ -53,5 +53,10 @@ public partial class FirstPersonController : CharacterBody3D, IPickupable, IPlay
     public Player CreatePlayer()
     {
         return new Player(this, GetViewport().GetCamera3D());
+    }
+
+    public bool CanCloseDoors()
+    {
+        return true;
     }
 }

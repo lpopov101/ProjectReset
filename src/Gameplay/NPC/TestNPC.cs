@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public partial class TestNPC : NPC
+public partial class TestNPC : NPC, IDoorOpener, IDoorCloser
 {
     enum State
     {
@@ -11,6 +11,12 @@ public partial class TestNPC : NPC
 
     [Export]
     private float _MaxDistanceFromPlayer = 5.0F;
+
+    [Export]
+    private bool _CanOpenDoors = false;
+
+    [Export]
+    private bool _CanCloseDoors = false;
 
     [Export]
     private WalkingCharacterSettings _walkingCharacterSettings;
@@ -103,6 +109,16 @@ public partial class TestNPC : NPC
     private Vector3 getPlayerPosition()
     {
         return Locator<PlayerManager>.Get().Player1().GetCharacterBody().GlobalPosition;
+    }
+
+    public bool CanOpenDoors()
+    {
+        return _CanOpenDoors;
+    }
+
+    public bool CanCloseDoors()
+    {
+        return _CanCloseDoors;
     }
 
     public override void Damage(

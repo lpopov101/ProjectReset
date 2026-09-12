@@ -444,7 +444,7 @@ axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 contact_monitor = true
-max_contacts_reported = 1
+max_contacts_reported = 4
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Door/Panel"]
 transform = Transform3D(0.2, 0, 0, 0, 4, 0, 0, 0, 2.5, 0, 0, 0)
@@ -590,6 +590,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8806, 0.589846, -0.557495)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("15_o625m")
+_CanOpenDoors = true
+_CanCloseDoors = true
 _walkingCharacterSettings = SubResource("Resource_hf2sn")
 
 [node name="Model" parent="CharacterBody3D" instance=ExtResource("15_a2e6g")]

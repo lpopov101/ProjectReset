@@ -5,9 +5,12 @@ using Godot;
 // forward input, and prints a per-frame trace.
 //
 //   Godot --path . --headless res://tests/stair_test_scene.tscn --max-fps 60 \
-//         --quit-after 400 -- <scenario>
+//         --quit-after 400 -- <scenario> [capsule_height] [probe_y] [speed]
 //
-// Scenarios: climb (default), descend, ledge, jump
+// Scenarios: climb (default), descend, ledge, jump, ascend
+//
+// ascend walks up a staircase; the optional args reproduce a character whose stair probe
+// does not sit exactly at its feet (as a scene-authored probe easily does).
 public partial class StairTestScene : Node3D
 {
     private const float CAPSULE_HEIGHT = 2.0F;
@@ -27,6 +30,10 @@ public partial class StairTestScene : Node3D
         {
             _scenario = userArgs[0];
         }
+
+        var capsuleHeight = userArgs.Length > 1 ? userArgs[1].ToFloat() : CAPSULE_HEIGHT;
+        var probeY = userArgs.Length > 2 ? userArgs[2].ToFloat() : -capsuleHeight / 2F;
+        var speed = userArgs.Length > 3 ? userArgs[3].ToFloat() : 0F;
 
         var startZ = 3.0F;
         var startFootY = 0F;
@@ -56,6 +63,25 @@ public partial class StairTestScene : Node3D
             startZ = 3.0F;
             startFootY = topY;
         }
+        else if (_scenario == "ascend")
+        {
+            // Staircase ascending in -z, then a landing, so every step is climbed in turn.
+            for (int i = 0; i < STEP_COUNT; i++)
+            {
+                var treadY = STEP_HEIGHT * (i + 1);
+                var z = -1.0F - (i * STEP_RUN);
+                addStaticBox(
+                    new Vector3(0, treadY / 2F, z - (STEP_RUN / 2F)),
+                    new Vector3(20, treadY, STEP_RUN)
+                );
+            }
+            var landingY = STEP_HEIGHT * STEP_COUNT;
+            var landingZ = -1.0F - (STEP_COUNT * STEP_RUN);
+            addStaticBox(
+                new Vector3(0, landingY / 2F, landingZ - 4.0F),
+                new Vector3(20, landingY, 8.0F)
+            );
+        }
         else if (_scenario == "ledge")
         {
             // Raised platform that simply ends: walking off must produce a real fall.
@@ -66,26 +92,34 @@ public partial class StairTestScene : Node3D
 
         _body = new CharacterBody3D();
         _body.Name = "TestCharacter";
-        _body.Position = new Vector3(0, startFootY + (CAPSULE_HEIGHT / 2F), startZ);
+        _body.Position = new Vector3(0, startFootY + (capsuleHeight / 2F), startZ);
 
         var collisionShape = new CollisionShape3D();
-        collisionShape.Shape = new CapsuleShape3D { Height = CAPSULE_HEIGHT, Radius = 0.5F };
+        collisionShape.Shape = new CapsuleShape3D { Height = capsuleHeight, Radius = 0.5F };
         _body.AddChild(collisionShape);
 
         var stairProbe = new Node3D();
         stairProbe.Name = "StairProbe";
-        stairProbe.Position = new Vector3(0, -CAPSULE_HEIGHT / 2F, 0);
+        stairProbe.Position = new Vector3(0, probeY, 0);
         _body.AddChild(stairProbe);
 
         AddChild(_body);
 
+        var settings = new WalkingCharacterSettings();
+        if (speed > 0F)
+        {
+            settings.Set("_GroundedMovementSpeed", speed);
+        }
         _handler = new WalkingCharacterHandler();
-        _handler.Init(_body, new WalkingCharacterSettings(), stairProbe);
+        _handler.Init(_body, settings, stairProbe);
         _body.AddChild(_handler);
 
         GD.Print(
             $"TEST scenario={_scenario} start_foot_y={startFootY:F3} "
-                + $"snap_len={_body.FloorSnapLength:F3} step_height={STEP_HEIGHT:F3}"
+                + $"snap_len={_body.FloorSnapLength:F3} step_height={STEP_HEIGHT:F3} "
+                + $"capsule={capsuleHeight:F3} probe_y={probeY:F5} "
+                + $"probe_above_feet={probeY + (capsuleHeight / 2F):F5} "
+                + $"speed={settings._GroundedMovementSpeed:F2}"
         );
     }
 

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://tests/DoorTestScene.cs" id="1_drtst"]
+[ext_resource type="Script" path="res://tests/DoorTestPlayer.cs" id="2_dtply"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dtply"]
+
+[node name="DoorTestScene" type="Node3D"]
+script = ExtResource("1_drtst")
+
+[node name="DoorTestPlayer" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 8)
+script = ExtResource("2_dtply")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorTestPlayer"]
+shape = SubResource("CapsuleShape3D_dtply")

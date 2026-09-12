@@ -96,9 +96,9 @@ public partial class WalkingCharacterHandler : Node
         {
             builder = builder.WithJumping(_WalkingCharacterSettings._JumpForce);
         }
-        applyStepClimb(direction, delta);
+        var climbedStep = applyStepClimb(direction, delta);
         applyTargetVelocity(builder.Build(), delta);
-        applyGroundStick();
+        applyGroundStick(climbedStep);
     }
 
     private void applyAirborneMovement(double delta)
@@ -121,6 +121,7 @@ public partial class WalkingCharacterHandler : Node
     {
         _CharacterBody.Velocity = targetVelocity;
         _CharacterBody.MoveAndSlide();
+        Door.OpenTouchedDoors(_CharacterBody);
         applyTurning(delta);
     }
 
@@ -156,10 +157,14 @@ public partial class WalkingCharacterHandler : Node
         return float.MaxValue;
     }
 
-    private void applyGroundStick()
+    private void applyGroundStick(bool climbedStep)
     {
         _stuckToGround = false;
-        if (_CharacterBody.IsOnFloor() || _CharacterBody.Velocity.Y > 0F)
+        // A step climb has just lifted the body clear of the tread it was standing on, and
+        // that tread is still within sticking range. Sticking back down would undo the lift,
+        // leaving the climb to advance only as far as the body happens to travel horizontally
+        // in a single frame - which makes climbing speed depend on walking speed.
+        if (climbedStep || _CharacterBody.IsOnFloor() || _CharacterBody.Velocity.Y > 0F)
         {
             return;
         }
@@ -173,16 +178,17 @@ public partial class WalkingCharacterHandler : Node
         _stuckToGround = true;
     }
 
-    private void applyStepClimb(Vector3 direction, double delta)
+    // Returns whether the body was lifted this frame.
+    private bool applyStepClimb(Vector3 direction, double delta)
     {
         if (!_CharacterBody.IsOnWall() || direction.IsZeroApprox())
         {
-            return;
+            return false;
         }
         var stepHeightOpt = probeStepHeight(direction);
         if (!stepHeightOpt.HasValue)
         {
-            return;
+            return false;
         }
         var remaining = stepHeightOpt.Value + _WalkingCharacterSettings._StepClearance;
         var rise = Mathf.Min(
@@ -191,9 +197,10 @@ public partial class WalkingCharacterHandler : Node
         );
         if (rise <= 0F)
         {
-            return;
+            return false;
         }
         _CharacterBody.MoveAndCollide(Vector3.Up * rise);
+        return true;
     }
 
     private Nullable<float> probeStepHeight(Vector3 direction)
